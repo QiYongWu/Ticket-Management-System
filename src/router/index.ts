@@ -7,9 +7,20 @@ import MyProcessing from "@/pages/MyTickets/MyProcessing.vue";
 import MyToBeCollaborated from "@/pages/MyTickets/MyToBeCollaborated.vue";
 import MyWaitReply from "@/pages/MyTickets/MyWaitReply.vue";
 import Set from "@/pages/Set/index.vue"
+
+import SignIn from "@/pages/sign/SignIn.vue";
+import SignUp from "@/pages/sign/SignUp.vue";
 import component from "element-plus/es/components/tree-select/src/tree-select-option.mjs";
 const history = createWebHashHistory();
 const routes = [
+    {
+        path:'/sign-in',
+        component:SignIn
+    },
+    {
+        path:'/sign-up',
+        component:SignUp
+    },
     {
         path:'/all-tickets',
         component:AllTickets
