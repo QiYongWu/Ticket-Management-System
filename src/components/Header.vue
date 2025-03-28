@@ -1,4 +1,5 @@
 <script lang="ts" setup name = "Header">
+    import {router} from '@/router/index.ts'
 
     function CreatedNewTicket(){
         console.log('created!')
@@ -13,6 +14,20 @@
         <el-button type = "primary" @click = "CreatedNewTicket">
             新建工单
         </el-button>
+
+        <el-button type = "primary" @click = "router.push('/sign-in')">
+            登录
+        </el-button>
+
+        <el-button type = "primary" @click = "router.push('/sign-up')">
+            注册
+        </el-button>
+
+
+        <el-button type = "primary" @click = "router.push('/change-password')">
+            修改密码
+        </el-button>
+
     </div>
 </template>
 

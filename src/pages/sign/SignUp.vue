@@ -6,26 +6,33 @@
   const email = ref('');
   const phoneNumber = ref('');
   function SignUp(){
-    console.log('Sign up start');
-    const userInfo = JSON.stringify({
-        "username": userName.value,
-        "email" : email.value,
-        "phone_number" : phoneNumber.value,
-        "password": password.value,
-    })
+    if(userName.value && password.value && email.value && phoneNumber.value){
+        console.log('Sign up start');
+        const userInfo = JSON.stringify({
+            "username": userName.value,
+            "email" : email.value,
+            "phone_number" : phoneNumber.value,
+            "password": password.value,
+        })
 
-    axios.post('http://222.215.137.44:8084/register/', userInfo)
-    .then(function (response) {
-        console.log(response);
-        window.alert(response.data.message)
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
-  }
+        axios.post('http://222.215.137.44:8084/register/', userInfo)
+        .then(function (response) {
+            console.log(response);
+            window.alert(response.data.message)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+      }
+
+    else{
+      window.alert('请完善所有信息')
+    }
+}
 </script>
 
 <template>
+   <div class="input-grid">
     <div class = "input-user-name-grid">
         <span>用户名:</span>
         <el-input
@@ -73,8 +80,23 @@
     <el-button type = "primary" @click = "SignUp"> 
         注册
     </el-button>
+
+    <RouterLink to  = '/sign-in'>
+      注册完成？点此返回登录
+    </RouterLink>
+  </div>
 </template>
   
-  <script lang="ts" setup>
+  <style scoped>
+    .input-grid{
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: solid 2px black;
+      gap:20px;
+      width:400px;
+      height:400px;
+    }
 
-  </script>
+  </style>

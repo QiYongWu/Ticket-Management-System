@@ -10,6 +10,8 @@ import Set from "@/pages/Set/index.vue"
 
 import SignIn from "@/pages/sign/SignIn.vue";
 import SignUp from "@/pages/sign/SignUp.vue";
+
+import ChangePassword from '@/pages/ChangePassword/index.vue'
 import component from "element-plus/es/components/tree-select/src/tree-select-option.mjs";
 const history = createWebHashHistory();
 const routes = [
@@ -52,6 +54,10 @@ const routes = [
     {
         path:'/Set',
         component:Set
+    },
+    {
+        path:'/change-password',
+        component:ChangePassword
     }
 ]
 
