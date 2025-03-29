@@ -12,9 +12,20 @@ import SignIn from "@/pages/sign/SignIn.vue";
 import SignUp from "@/pages/sign/SignUp.vue";
 
 import ChangePassword from '@/pages/ChangePassword/index.vue'
+import InputTicket from '@/pages/InputTicket/index.vue'
+import UploadAttachments from '@/pages/InputTicket/Upload/index.vue'
 import component from "element-plus/es/components/tree-select/src/tree-select-option.mjs";
 const history = createWebHashHistory();
 const routes = [
+    {
+        path:'/input-ticket/upload-attachments',
+        component:UploadAttachments
+    }
+    ,
+    {
+        path:'/input-ticket',
+        component:InputTicket
+    },
     {
         path:'/sign-in',
         component:SignIn

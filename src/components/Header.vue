@@ -2,7 +2,7 @@
     import {router} from '@/router/index.ts'
 
     function CreatedNewTicket(){
-        console.log('created!')
+        router.push('/input-ticket');
     }
 </script>
 <template>
