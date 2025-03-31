@@ -1,13 +1,12 @@
 <script lang="ts" name="InputTicket" setup>
-import { QuillEditor } from '@vueup/vue-quill';
+import { QuillEditor } from '@vueup/vue-quill'; 
 import '@vueup/vue-quill/dist/vue-quill.snow.css'; // 引入默认主题样式
 import { UploadOne } from '@icon-park/vue-next';
 import { reactive, ref } from 'vue';
-import { v4 as uuidv4 } from 'uuid'
-import { nanoid } from 'nanoid';
 import axios from 'axios';
 import { useTicketIDStore } from '@/store';
 const ticketStore = useTicketIDStore();
+
 const form = reactive({
   ticketId: 0,
   ticketTitle: '',
@@ -31,8 +30,10 @@ function generate10DigitId() {
 const formRef = ref();
 
 function onSubmit() {
+  
   // 调用 validate 方法进行验证
   formRef.value.validate((valid: boolean) => {
+    
     if (valid) {
       console.log('验证通过，正在提交');
       form.ticketId = generate10DigitId() // 生成唯一的10位ID
@@ -70,10 +71,30 @@ function onSubmit() {
 function onCancel() {
   console.log('取消提交');
 }
+
+const editorOptions= {
+        placeholder: '请输入内容', 
+        theme: 'snow', // 使用 Snow 主题
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'], // 粗体、斜体、下划线、删除线
+            [{ 'header': 1 }, { 'header': 2 }], // H1 和 H2 标题
+            ['blockquote'], // 引用
+            ['image'], // 图片插入
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }], // 有序和无序列表
+            ['code-block'], // 代码块
+            ['clean'], // 清除格式（类似图片中的垃圾桶图标）
+          ],
+        },
+      }
+
 </script>
 
 <template>
-  <el-form :model="form" ref="formRef" label-width="80px" class = 'el-form-grid'>
+  <el-form
+   :model="form" ref="formRef" 
+  label-width="80px" 
+  class = 'el-form-grid'>
     <el-form-item 
       label="工单标题" 
       label-position = "top"
@@ -86,8 +107,15 @@ function onCancel() {
       label="工单内容"
       prop="ticketContent"
       label-position = "top"
-      :rules="[{ required: true, message: '请输入工单内容' }]">
-      <el-input v-model="form.ticketContent" type="textarea" placeholder = "请输入工单内容" />
+      :rules="[{ required: false, message: '请输入工单内容' }]">
+      <div class = 'ql-editor-container'>
+        <QuillEditor 
+          v-model:content="form.ticketContent"
+          placeholder="请输入工单内容" 
+          :options="editorOptions"
+          class="ql-editor" 
+      />
+      </div>
     </el-form-item>
 
     <el-form-item
@@ -135,5 +163,17 @@ function onCancel() {
   gap:20px;
   justify-content: center;
   margin:50px;
+}
+
+.ql-editor-container{
+  display:flex;
+  flex-direction: column;
+  height:300px;
+ width:1500px;
+}
+
+.ql-editor {
+ height:500px;
+ width:500px;
 }
 </style>
