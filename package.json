@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@icon-park/vue-next": "^1.4.2",
+    "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.8.4",
     "element-plus": "^2.9.7",
     "nanoid": "^5.1.5",

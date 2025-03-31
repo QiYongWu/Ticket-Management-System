@@ -1,4 +1,7 @@
 <script lang="ts" name="InputTicket" setup>
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css'; // 引入默认主题样式
+import { UploadOne } from '@icon-park/vue-next';
 import { reactive, ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid'
 import { nanoid } from 'nanoid';
@@ -70,26 +73,38 @@ function onCancel() {
 </script>
 
 <template>
-  <el-form :model="form" ref="formRef" label-width="80px">
+  <el-form :model="form" ref="formRef" label-width="80px" class = 'el-form-grid'>
     <el-form-item 
       label="工单标题" 
+      label-position = "top"
       prop="ticketTitle"
       :rules="[{ required: true, message: '请输入工单标题' }]">
-      <el-input v-model="form.ticketTitle" />
+      <el-input v-model="form.ticketTitle" placeholder = "请输入工单标题" />
     </el-form-item>
 
     <el-form-item
       label="工单内容"
       prop="ticketContent"
+      label-position = "top"
       :rules="[{ required: true, message: '请输入工单内容' }]">
-      <el-input v-model="form.ticketContent" type="textarea" />
+      <el-input v-model="form.ticketContent" type="textarea" placeholder = "请输入工单内容" />
     </el-form-item>
-    <RouterLink to = '/input-ticket/upload-attachments'>
-        上传附件
-    </RouterLink>
+
+    <el-form-item
+      label="上传附件"
+      label-position = "top"
+    >
+      <RouterLink to = '/input-ticket/upload-attachments'>
+        <upload-one theme="outline" size="24" fill="#333" />
+        <span>上传附件</span>  
+      </RouterLink>
+  
+    </el-form-item>
+
 
     <el-form-item
       label="优先级"
+      label-position = "top"
       prop="ticketPriority"
       :rules="[{ required: true, message: '请选择优先级' }]">
       <el-radio-group v-model="form.ticketPriority">
@@ -106,3 +121,19 @@ function onCancel() {
     </el-form-item>
   </el-form>
 </template>
+
+<style scoped>
+
+.el-form-grid{
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 20px;
+  font-weight: bold;
+  display:flex;
+  flex-direction: column;
+  width:80%;
+  height:80%;
+  gap:20px;
+  justify-content: center;
+  margin:50px;
+}
+</style>

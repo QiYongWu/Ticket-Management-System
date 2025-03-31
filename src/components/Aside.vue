@@ -64,5 +64,10 @@ const handleClose = (key: string, keyPath: string[]) => {
     margin-left:30px;
   }
 
+  .tac{
+    height:100%;
+  }
+
+
 </style>
   

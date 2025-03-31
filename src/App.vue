@@ -13,11 +13,15 @@
 
       <el-container>
         <el-aside width="200px" class = "el-aside-container">
+          <div style = "height: auto;">
             <Aside />
+          </div>
         </el-aside>
 
         <el-main class = "el-main-container">
-            <Main />
+            <div style = "height:650px;">
+              <Main />
+            </div>
         </el-main>
 
       </el-container>
@@ -31,7 +35,7 @@
   }
   .el-main-container{
     border-top:none;
-    border-left:none;
+   
     padding:0%
   }
 
