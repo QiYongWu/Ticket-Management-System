@@ -88,6 +88,7 @@ const editorOptions= {
         },
       }
 
+
 </script>
 
 <template>
@@ -107,7 +108,7 @@ const editorOptions= {
       label="工单内容"
       prop="ticketContent"
       label-position = "top"
-      :rules="[{ required: false, message: '请输入工单内容' }]">
+      :rules="[{ required: true, message: '请输入工单内容' }]">
       <div class = 'ql-editor-container'>
         <QuillEditor 
           v-model:content="form.ticketContent"
@@ -132,16 +133,35 @@ const editorOptions= {
 
     <el-form-item
       label="优先级"
-      label-position = "top"
+      label-position="top"
       prop="ticketPriority"
       :rules="[{ required: true, message: '请选择优先级' }]">
       <el-radio-group v-model="form.ticketPriority">
-        <el-radio :value="0">紧急</el-radio>
-        <el-radio :value="1">高</el-radio>
-        <el-radio :value="2">一般</el-radio>
-        <el-radio :value="3">低</el-radio>
+        <!-- 紧急（红色） -->
+        <el-radio :value="0">
+          <div class="priority-color-block" style="background: #FF0000"></div>
+          紧急
+        </el-radio>
+
+        <!-- 高（粉红） -->
+        <el-radio :value="1">
+          <div class="priority-color-block" style="background: #FFC0CB"></div>
+          高
+        </el-radio>
+
+        <!-- 一般（蓝色） -->
+        <el-radio :value="2">
+          <div class="priority-color-block" style="background: #409EFF"></div>
+          一般
+        </el-radio>
+
+        <!-- 低（绿色） -->
+        <el-radio :value="3">
+          <div class="priority-color-block" style="background: #67C23A"></div>
+          低
+        </el-radio>
       </el-radio-group>
-    </el-form-item>
+  </el-form-item>
 
     <el-form-item>
       <el-button @click="onCancel">取消</el-button>
@@ -151,6 +171,22 @@ const editorOptions= {
 </template>
 
 <style scoped>
+
+.priority-color-block {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  margin-right: 8px;
+  vertical-align: middle;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* 选中状态放大效果 */
+.el-radio.is-checked .priority-color-block {
+  transform: scale(1.2);
+  transition: transform 0.3s;
+}
 
 .el-form-grid{
   font-family: 'Courier New', Courier, monospace;
