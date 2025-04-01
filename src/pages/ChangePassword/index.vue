@@ -1,87 +1,191 @@
-<script name = "ChangePassword" setup lang = 'ts'>
+<script name="ChangePassword" setup lang="ts">
 import axios from 'axios';
 import { ref } from 'vue';
 
 const oldPassword = ref('');
 const newPassword = ref('');
+const isLoading = ref(false);
 
-function ChangePassword(){
-    if(oldPassword.value && newPassword.value){
-        console.log('change password start!');
-        const userInfo = {
-            "method":"user.changepassword",
-            "params":{
-            "old_password":oldPassword.value,
-            "new_password": newPassword.value, 
-            }
-        }
-
-
-        axios.post('http://222.215.137.44:8084/api_jsonrpc/', userInfo)
-            .then(function (response) {
-                console.log(`user-info:${userInfo}`)
-                console.log(response);
-                if(response.data.success){
-                window.alert(`修改密码成功!  ${response.data.message}`)
-
-                }
-                else{
-                    window.alert(`修改密码失败！ ${response.data.message}`)
-                }
-                })
-
-                .catch(function (error) {
-                    console.log(error);
-                });
+async function ChangePassword() {
+  try {
+    isLoading.value = true;
+    const userInfo = {
+      "method": "user.changepassword",
+      "params": {
+        "old_password": oldPassword.value,
+        "new_password": newPassword.value,
+      }
     }
 
-    else{
-        window.alert('请补全信息！')
+    const response = await axios.post('http://222.215.137.44:8084/api_jsonrpc/', userInfo)
+    if (response.data.success) {
+      window.alert(`密码修改成功! ${response.data.message}`)
+      oldPassword.value = ''
+      newPassword.value = ''
+    } else {
+      window.alert(`修改失败: ${response.data.message}`)
     }
+  } catch (error) {
+    console.error('修改出错:', error)
+    window.alert('修改失败，请稍后重试')
+  } finally {
+    isLoading.value = false
+  }
 }
-
 </script>
 
 <template>
-    <div class = 'input-grid'>
-        <div class = "input-user-password-grid">
-          <span>旧密码:</span>
+  <div class="auth-container">
+    <div class="form-wrapper">
+      <h1 class="form-title">修改密码</h1>
+      
+      <div class="password-form">
+        <div class="input-group">
+          <label class="input-label">旧密码</label>
           <el-input
-          v-model="oldPassword"
-          style="width: 240px"
-          type="password"
-          placeholder="请输入旧的密码"
-          show-password
+            v-model="oldPassword"
+            type="password"
+            placeholder="请输入当前密码"
+            show-password
+            class="modern-input"
           />
         </div>
 
-        <div class = "input-user-password-grid">
-          <span>新密码:</span>
+        <div class="input-group">
+          <label class="input-label">新密码</label>
           <el-input
-          v-model="newPassword"
-          style="width: 240px"
-          type="password"
-          placeholder="请输入新的密码"
-          show-password
+            v-model="newPassword"
+            type="password"
+            placeholder="至少8位字符，建议包含特殊字符"
+            show-password
+            class="modern-input"
           />
+          <div class="password-tips">
+            <span v-if="newPassword.length > 0 && newPassword.length < 8" class="tip-danger">密码强度不足</span>
+            <span v-else-if="newPassword.length >= 8" class="tip-success">有效密码长度</span>
+          </div>
         </div>
 
-      <el-button type = "primary" @click="ChangePassword">
-          确认修改
-      </el-button>
+        <el-button 
+          type="primary" 
+          class="submit-btn"
+          :loading="isLoading"
+          @click="ChangePassword"
+        >
+          {{ isLoading ? '正在修改...' : '确认修改' }}
+        </el-button>
+      </div>
     </div>
-
+  </div>
 </template>
 
 <style scoped>
-    .input-grid{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap:20px;
-        flex-direction: column;
-        width:400px;
-        height:400px;
-        border:solid 2px black;
+.password-form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.input-group {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.input-label {
+  display: block;
+  font-size: 0.95rem;
+  color: #4a5568;
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+  padding-left: 0.5rem;
+}
+
+.modern-input {
+  :deep(.el-input__wrapper) {
+    background: rgba(247, 250, 252, 0.9);
+    border-radius: 12px;
+    padding: 0.9rem 1.2rem;
+    box-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.05),
+      inset 0 0 0 1px rgba(203, 213, 225, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.08),
+        inset 0 0 0 1px rgba(102, 126, 234, 0.4);
     }
+
+    &.is-focus {
+      box-shadow: 
+        0 0 0 3px rgba(102, 126, 234, 0.15),
+        inset 0 0 0 1px #667eea;
+    }
+  }
+}
+
+.password-tips {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  padding-left: 0.5rem;
+
+  .tip-danger {
+    color: #fc8181;
+    display: flex;
+    align-items: center;
+    
+    &::before {
+      content: "⚠️";
+      margin-right: 0.5rem;
+    }
+  }
+
+  .tip-success {
+    color: #68d391;
+    display: flex;
+    align-items: center;
+    
+    &::before {
+      content: "✅";
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: 
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+/* 复用全局样式 */
+.auth-container { /* 与登录注册页面相同 */ }
+.form-wrapper { /* 与登录注册页面相同 */ }
+.form-title { /* 与登录注册页面相同 */ }
+
+@media (max-width: 480px) {
+  .password-form {
+    padding: 0 1rem;
+  }
+  
+  .input-group {
+    margin-bottom: 1.5rem;
+  }
+}
 </style>

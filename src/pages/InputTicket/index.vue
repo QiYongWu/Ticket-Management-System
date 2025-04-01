@@ -198,14 +198,14 @@ const editorOptions= {
   height:80%;
   gap:20px;
   justify-content: center;
-  margin:50px;
+  margin:20px;
 }
 
 .ql-editor-container{
   display:flex;
   flex-direction: column;
   height:300px;
- width:1500px;
+  width:1500px;
 }
 
 .ql-editor {
