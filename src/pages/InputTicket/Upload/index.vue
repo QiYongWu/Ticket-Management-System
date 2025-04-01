@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Close } from '@icon-park/vue-next';
 import { ref } from 'vue';
 import { ElMessage, ElProgress } from 'element-plus';
-import { useTicketIDStore } from '@/store';
+
 
 interface UploadFile {
   file: File;
@@ -111,6 +111,7 @@ const removeFile = (index: number) => {
             @change="handleFileChange"
             class="file-input"
             :disabled="isUploading"
+            
           >
           <div class="upload-hint">点击选择或拖拽文件到此区域</div>
         </div>
@@ -151,6 +152,7 @@ const removeFile = (index: number) => {
                   @click="uploadFiles"
                   type="warning"
                   size="small"
+
                 >
                   重试
                 </el-button>
@@ -165,15 +167,21 @@ const removeFile = (index: number) => {
           @click="uploadFiles"
           :loading="isUploading"
           :disabled="files.length === 0"
+          class = "upload-button"
         >
           {{ isUploading ? '上传中...' : '开始上传' }}
         </el-button>
+
       </el-main>
     </el-container>
   </div>
 </template>
 
 <style scoped>
+.upload-button{
+
+  margin-left:90%;
+}
 .header-grid {
   display: flex;
   justify-content: space-between;
@@ -189,6 +197,7 @@ const removeFile = (index: number) => {
   padding: 20px;
   text-align: center;
   transition: border-color 0.3s;
+  height:400px;
 
   &:hover {
     border-color: #409eff;
@@ -197,10 +206,12 @@ const removeFile = (index: number) => {
 
 .file-input {
   position: absolute;
-  width: 100%;
-  height: 100%;
   opacity: 0;
   cursor: pointer;
+  height:400px;
+  width:400px;
+  margin :0
+  
 }
 
 .upload-hint {
