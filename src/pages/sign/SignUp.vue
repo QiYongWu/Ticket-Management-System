@@ -1,21 +1,19 @@
 <script lang="ts" name = "SignUp" setup>
-  import { ref } from 'vue'
+  import { ref,reactive } from 'vue'
   import axios from 'axios';
-  const userName = ref('');
-  const password = ref('');
-  const email = ref('');
-  const phoneNumber = ref('');
-  function SignUp(){
-    if(userName.value && password.value && email.value && phoneNumber.value){
-        console.log('Sign up start');
-        const userInfo = JSON.stringify({
-            "username": userName.value,
-            "email" : email.value,
-            "phone_number" : phoneNumber.value,
-            "password": password.value,
-        })
+  const signUnForm = reactive({
+    userName:'',
+    password:'',
+    email:'',
+    phoneNumber:''
+  })
 
-        axios.post('http://222.215.137.44:8084/register/', userInfo)
+  function SignUp(){
+    if(signUnForm.userName && signUnForm.password && signUnForm.email && signUnForm.phoneNumber){
+        console.log('Sign up start');
+        
+
+        axios.post('http://222.215.137.44:8084/register/', signUnForm)
         .then(function (response) {
             console.log(response);
             window.alert(response.data.message)
@@ -32,71 +30,39 @@
 </script>
 
 <template>
-   <div class="input-grid">
-    <div class = "input-user-name-grid">
-        <span>用户名:</span>
-        <el-input
-        v-model="userName"
-        style="width: 240px"
-        placeholder="请输入用户名"
-        clearable
-        />
-    </div>
+  <div>
+     <div class = 'form-grid'>
+    <el-form  :model="signUnForm" label-width="auto" style="max-width: 600px">
+      <el-form-item label="邮箱" label-position="top" >
+        <el-input type="email" v-model="signUnForm.email" />
+      </el-form-item>
 
-    <div class = "input-user-password-grid">
-        <span>邮箱:</span>
-        <el-input
-        v-model="email"
-        style="width: 240px"
-        type="email"
-        placeholder="请输入邮箱"
-        clearable
-        />
-    </div>
+      <el-form-item label="用户名" label-position="top" >
+        <el-input type="text" v-model="signUnForm.userName" />
+      </el-form-item>
 
-    <div class = "input-user-password-grid">
-        <span>手机号:</span>
-        <el-input
-        v-model="phoneNumber"
-        style="width: 240px"
-        type="text"
-        placeholder="请输入手机号"
-        clearable
-        />
-    </div>
+      <el-form-item label="手机号" label-position="top" >
+        <el-input type="text" v-model="signUnForm.phoneNumber" />
+      </el-form-item>
 
-    <div class = "input-user-password-grid">
-        <span>密码:</span>
-        <el-input
-        v-model="password"
-        style="width: 240px"
-        type="password"
-        placeholder="请输入密码"
-        show-password
-        clearable
-        />
-    </div>
+      <el-form-item label="密码" label-position="top">
+        <el-input type = 'password' v-model ="signUnForm.password" /> 
+      </el-form-item>
 
-    <el-button type = "primary" @click = "SignUp"> 
-        注册
-    </el-button>
+      <el-form-item>
+        <el-button>
+          取消
+        </el-button>
+        <el-button type = "primary" @click = "SignUp"> 
+          注册
+        </el-button>
+        <RouterLink to  = '/sign-in'>
+            注册完成？点此返回登录
+        </RouterLink>
+      </el-form-item>
 
-    <RouterLink to  = '/sign-in'>
-      注册完成？点此返回登录
-    </RouterLink>
+    </el-form>
+  </div>
   </div>
 </template>
   
-  <style scoped>
-    .input-grid{
-      display:flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border: solid 2px black;
-      gap:20px;
-      width:400px;
-      height:400px;
-    }
-
-  </style>
