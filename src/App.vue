@@ -7,19 +7,19 @@
   <div class="common-layout">
     <el-container>
       
-      <el-header height = "80px" class = 'el-header-container'>
+      <el-header height = "68px" class = 'el-header-container'>
         <Header />
       </el-header>
 
       <el-container>
-        <el-aside width="200px" class = "el-aside-container">
+        <el-aside width="185px" class = "el-aside-container">
           <div style = "height: auto;">
             <Aside />
           </div>
         </el-aside>
 
         <el-main class = "el-main-container">
-            <div style = "height:650px;">
+            <div style = "height:auto">
               <Main />
             </div>
         </el-main>
@@ -30,12 +30,9 @@
 </template>
 
 <style scoped>
-  .el-header-container,.el-aside-container,.el-main-container{
-    border:solid 1px black
-  }
+ 
   .el-main-container{
-    border-top:none;
-   
+  
     padding:0%
   }
 
