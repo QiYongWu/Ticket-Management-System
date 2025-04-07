@@ -8,6 +8,7 @@ const searchTicket = ref('')
 const isFocus = ref(false)
 const dates = ref('')
 let searchResult = reactive([])
+let IsSearchTickets = ref(false)
 
 function formatDate(date: Date): string {
   const year = date.getFullYear()
@@ -33,8 +34,10 @@ console.log(data);
   axios.post('http://222.215.137.44:8084/api_jsonrpc/',data)
   .then((res) =>{
     const resultObj = JSON.parse(res.data.result);
-    
     searchResult = resultObj;
+    if(searchResult){
+      IsSearchTickets.value = true
+    }
     console.log(...resultObj);
     // console.log(res.data.result)
   })
@@ -107,7 +110,7 @@ function SearchTicketAttachmentById(){
     </div>
   </div>
 
-  <ShowTickets :showTickets = "searchResult" />
+  <ShowTickets :showTickets = "searchResult" v-if="IsSearchTickets" />
 
 </template>
 
