@@ -8,7 +8,7 @@ const searchTicket = ref('')
 const isFocus = ref(false)
 const dates = ref('')
 let searchResult = reactive([])
-let IsSearchTickets = ref(false)
+let isSearchTickets = ref(false)
 
 function formatDate(date: Date): string {
   const year = date.getFullYear()
@@ -33,19 +33,28 @@ function HandleSearch() {
 console.log(data);
   axios.post('http://222.215.137.44:8084/api_jsonrpc/',data)
   .then((res) =>{
+
+    if(searchResult.length !== 0){
+        isSearchTickets.value = false;
+        searchResult = [];
+      }
     const resultObj = JSON.parse(res.data.result);
-    searchResult = resultObj;
-    if(searchResult){
-      IsSearchTickets.value = true
-    }
     console.log(...resultObj);
-    // console.log(res.data.result)
+    if(resultObj.length !== 0){
+      searchResult = resultObj;
+      isSearchTickets.value = true
+      console.log(res.data.result)
+    }
+
+    else{
+      isSearchTickets.value = false;
+      searchResult = [];
+    }
+
+   
+    
   })
 }
-
-
-
-
 function SearchTicketAttachmentById(){
   if(id.value){
     const data = {
@@ -56,14 +65,44 @@ function SearchTicketAttachmentById(){
     }
     axios.post('http://222.215.137.44:8084/api_jsonrpc/',data)
     .then((res) =>{
-     const result = JSON.parse(res.data.result)
+      console.log(res)
+      if(searchResult.length !== 0){
+        isSearchTickets.value = false;
+        searchResult = [];
+      }
+     const result = JSON.parse(res.data.result);
+     if(result.length !== 0){
+       searchResult = result;
+       isSearchTickets.value = true;
+     }
       console.log(...result)
+    })
+    .catch((err) =>{
+      window.alert('系统发生错误！')
     })
   }
 }
 </script>
 
 <template>
+
+  <div class = 'search-container'>
+
+    <div class="demo-date-picker">
+      <div class="block">
+        <el-date-picker
+          v-model="dates"
+          type="daterange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+          :default-value="[new Date(2025, 4, 1), new Date(2025, 4, 7)]"
+          unlink-panels="true"
+
+        />
+        <el-button type="primary" @click="HandleSearch">搜索工单</el-button>
+      </div>
+    </div>
+
   <div class="search-container" :class="{ focused: isFocus }">
     <div class="input-wrapper">
       <Search
@@ -94,27 +133,23 @@ function SearchTicketAttachmentById(){
     </button>
   </div>
 
-  <div class="demo-date-picker">
-    <div class="block">
-      <span class="demonstration">选择工单创建时的时间范围来搜索工单</span>
-      <el-date-picker
-        v-model="dates"
-        type="daterange"
-        start-placeholder="开始时间"
-        end-placeholder="结束时间"
-        :default-value="[new Date(2025, 4, 1), new Date(2025, 4, 7)]"
-        unlink-panels="true"
-
-      />
-      <el-button type="primary" @click="HandleSearch">搜索工单</el-button>
-    </div>
   </div>
 
-  <ShowTickets :showTickets = "searchResult" v-if="IsSearchTickets" />
+  
+
+  <div class ="search-result-container">
+    <ShowTickets :showTickets = "searchResult" v-if="isSearchTickets" />
+  </div>
 
 </template>
 
 <style scoped>
+.search-container{
+  display:flex;
+  gap : 20px;
+  padding:10px;
+}
+
 /* 样式代码保持不变 */
 .demo-date-picker {
   display: flex;

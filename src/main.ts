@@ -31,3 +31,7 @@ const pinia = createPinia()
 app.use(pinia);
 
 app.mount('#app')
+
+
+//母日期设置
+export const startDate = '2025-01-01'

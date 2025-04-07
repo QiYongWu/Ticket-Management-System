@@ -28,7 +28,7 @@ const myTicketsItems = [
         @open="handleOpen"
         @close="handleClose"
       >
-        <el-menu-item index="/all-tickets" class="menu-item">
+        <el-menu-item index="/home" class="menu-item">
           <el-icon class="menu-icon"><icon-menu /></el-icon>
           <span>所有工单</span>
           <div class="active-indicator"></div>

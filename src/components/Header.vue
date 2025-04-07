@@ -13,7 +13,7 @@ function CreatedNewTicket() {
   <header class="app-header">
     <div class="header-content">
       <!-- 左侧品牌区 -->
-      <div class="brand" @click="router.push('/')">
+      <div class="brand" @click="router.push('/home')">
         <el-icon class="logo-icon"><MagicStick /></el-icon>
         <h1 class="title">工单管理系统</h1>
       </div>
