@@ -69,7 +69,9 @@ const uploadFiles = async () => {
             files.value[index].progress = progress;
           }
         }
-      );
+      ).then((response) => {
+        window.alert(response.data.message);
+      });
 
       files.value[index].status = 'success';
     }));

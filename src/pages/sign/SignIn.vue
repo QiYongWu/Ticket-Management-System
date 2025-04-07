@@ -2,24 +2,30 @@
   import { reactive } from 'vue'
   import axios from 'axios';
   const signInForm = reactive({
-    userName:'',
-    password:''
+    'username':'',
+    'password':''
   })
     
   function SignIn(){
-    if(signInForm.userName && signInForm.password){
+    if(signInForm.username && signInForm.password){
         console.log('login start');
         axios.post('http://222.215.137.44:8084/login/', signInForm)
         .then(function (response) {
-            console.log(`user-form:${signInForm}`)
-            console.log(response);
+
             if(response.data.success){
-              window.alert(`恭喜${response.data.username} ! 登录成功!`)
+              console.log(response)
+              if(response.data.message){
+                window.alert(response.data.message)
+              }
+
+              else{
+                window.alert('登录成功！')
+              }
               localStorage.setItem('jwt_token', response.data.token);
 
             }
             else{
-                window.alert(`登录失败！ ${response.data.message}`)
+                window.alert(response.data.message)
             }
           })
 
@@ -44,7 +50,7 @@
         <el-form-item label="用户名" label-position="top">
           <el-input 
             type="text" 
-            v-model="signInForm.userName"
+            v-model="signInForm.username"
             placeholder="请输入用户名"
             class="custom-input"
           />

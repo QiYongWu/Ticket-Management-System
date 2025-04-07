@@ -7,10 +7,10 @@ const router = useRouter()
 const isLoading = ref(false)
 
 const signUpForm = reactive({
-  userName: '',
+  username: '',
   password: '',
   email: '',
-  phoneNumber: ''
+  phone_number: ''
 })
 
 // 密码强度验证
@@ -56,7 +56,7 @@ async function SignUp() {
     isLoading.value = true
     const response = await axios.post('http://222.215.137.44:8084/register/', signUpForm)
     
-    window.alert(response.data.message)
+    window.alert(response.data.message);
     if(response.data.success) {
       router.push('/sign-in')
     }
@@ -83,7 +83,7 @@ async function SignUp() {
       >
         <el-form-item label="用户名" prop="userName">
           <el-input
-            v-model="signUpForm.userName"
+            v-model="signUpForm.username"
             placeholder="设置您的唯一标识"
             class="custom-input"
             clearable
@@ -102,7 +102,7 @@ async function SignUp() {
 
         <el-form-item label="手机号" prop="phoneNumber">
           <el-input
-            v-model="signUpForm.phoneNumber"
+            v-model="signUpForm.phone_number"
             placeholder="13812345678"
             class="custom-input"
             clearable

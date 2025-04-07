@@ -8,6 +8,8 @@ import {install} from '@icon-park/vue-next/es/all';
 import axios from 'axios';
 
 
+
+
 //设置全局拦截器
 axios.interceptors.request.use(config => {
   const token = localStorage.getItem('jwt_token') || '';
@@ -21,6 +23,7 @@ axios.interceptors.request.use(config => {
 });
 
 const app = createApp(App)
+
 app.use(router);
 app.use(ElementPlus)
 install(app);

@@ -6,31 +6,21 @@ const oldPassword = ref('');
 const newPassword = ref('');
 const isLoading = ref(false);
 
-async function ChangePassword() {
-  try {
+function ChangePassword() {
     isLoading.value = true;
     const userInfo = {
-      "method": "user.changepassword",
-      "params": {
-        "old_password": oldPassword.value,
-        "new_password": newPassword.value,
+      "method":"user.changepassword",
+      "params":{
+        "old_password":oldPassword.value,
+        "new_password":newPassword.value,
       }
     }
 
-    const response = await axios.post('http://222.215.137.44:8084/api_jsonrpc/', userInfo)
-    if (response.data.success) {
-      window.alert(`密码修改成功! ${response.data.message}`)
-      oldPassword.value = ''
-      newPassword.value = ''
-    } else {
-      window.alert(`修改失败: ${response.data.message}`)
-    }
-  } catch (error) {
-    console.error('修改出错:', error)
-    window.alert('修改失败，请稍后重试')
-  } finally {
-    isLoading.value = false
-  }
+    axios.post('http://222.215.137.44:8084/api_jsonrpc/', userInfo)
+    .then((res) => {
+      window.alert(res.data.message)
+    })
+  
 }
 </script>
 

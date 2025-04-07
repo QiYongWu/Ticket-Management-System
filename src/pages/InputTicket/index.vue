@@ -53,6 +53,7 @@ function onSubmit() {
       )
       .then((response) =>{
         console.log(response);
+        window.alert(response.data.message);
       })
       .catch((error) =>{
         console.log(error)
