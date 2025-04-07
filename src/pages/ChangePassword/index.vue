@@ -18,7 +18,10 @@ function ChangePassword() {
 
     axios.post('http://222.215.137.44:8084/api_jsonrpc/', userInfo)
     .then((res) => {
-      window.alert(res.data.message)
+      window.alert(res.data.message);
+      if(res.data.message == '密码修改成功！'){
+        isLoading.value = true
+      }
     })
   
 }

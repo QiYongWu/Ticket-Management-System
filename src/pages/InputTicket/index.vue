@@ -1,168 +1,164 @@
 <script lang="ts" name="InputTicket" setup>
-import { QuillEditor } from '@vueup/vue-quill'; 
-import '@vueup/vue-quill/dist/vue-quill.snow.css'; // 引入默认主题样式
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import { UploadOne } from '@icon-park/vue-next';
 import { reactive, ref } from 'vue';
 import axios from 'axios';
-import { useTicketIDStore } from '@/store';
-const ticketStore = useTicketIDStore();
+
+import type { FormInstance } from 'element-plus';
+
 
 const form = reactive({
-  ticketId: 0,
-  ticketTitle: '',
-  ticketContent: '',
-  ticketPriority: 2  // 0-紧急 1-高 2-一般 3-低
+  feelec_template_id: 0,
+  WorkOrderHeading: '',
+  WorkOrderContent: '',
+  Priority: 2,
+  contact_person: '',
+  contact_number: ''
 });
 
+const formRef = ref<FormInstance>();
+
 function generate10DigitId() {
-  // 1. 取当前时间戳后 9 位（保证基础唯一性）
   const timestampPart = Date.now().toString().slice(-9);
-  
-  // 2. 生成 1 位随机数（0-9）
   const randomDigit = Math.floor(Math.random() * 10);
-  
-  // 3. 组合成 10 位数字
   return parseInt(timestampPart + randomDigit, 10);
 }
-// 示例输出：6837648923 (动态变化)
-
-// 绑定 form 实例引用
-const formRef = ref();
 
 function onSubmit() {
-  
-  // 调用 validate 方法进行验证
-  formRef.value.validate((valid: boolean) => {
-    
+  formRef.value?.validate((valid) => {
     if (valid) {
-      console.log('验证通过，正在提交');
-      form.ticketId = generate10DigitId() // 生成唯一的10位ID
-      ticketStore.ticketId = form.ticketId;
-      localStorage.setItem('ticketId',form.ticketId.toString())
-      axios.post(
-      'http://222.215.137.44:8084/api_jsonrpc/',
-      {   
-        "method":"ticket.create",
-        "params":{
-            "feelec_template_id":form.ticketId,
-            "WorkOrderHeading":form.ticketTitle,
-            "WorkOrderContent":form.ticketContent,
-            "Priority":form.ticketPriority
+      form.feelec_template_id = generate10DigitId();
+
+      localStorage.setItem('ticketId', form.feelec_template_id.toString());
+
+      axios.post('http://222.215.137.44:8084/ticket/ticket_create/', form, {
+        headers: {
+          'Content-Type': 'application/json'
         }
-    }
-      )
-      .then((response) =>{
-        console.log(response);
+      })
+      .then((response) => {
+        console.log(response)
         window.alert(response.data.message);
       })
-      .catch((error) =>{
-        console.log(error)
-      })
-      .finally(()=>{
-        console.log('end')
-      })
-
+      .catch((error) => {
+        console.error('提交失败:', error);
+        window.alert('提交失败，请稍后重试');
+      });
     } else {
-      console.log('验证失败，请检查输入项');
+      console.log('验证失败');
       return false;
     }
   });
 }
 
 function onCancel() {
-  console.log('取消提交');
+  formRef.value?.resetFields();
 }
 
-const editorOptions= {
-        placeholder: '请输入内容', 
-        theme: 'snow', // 使用 Snow 主题
-        modules: {
-          toolbar: [
-            ['bold', 'italic', 'underline', 'strike'], // 粗体、斜体、下划线、删除线
-            [{ 'header': 1 }, { 'header': 2 }], // H1 和 H2 标题
-            ['blockquote'], // 引用
-            ['image'], // 图片插入
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }], // 有序和无序列表
-            ['code-block'], // 代码块
-            ['clean'], // 清除格式（类似图片中的垃圾桶图标）
-          ],
-        },
-      }
-
-
+const editorOptions = {
+  placeholder: '请输入内容',
+  theme: 'snow',
+  modules: {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'header': 1 }, { 'header': 2 }],
+      ['blockquote'],
+      ['image'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      ['code-block'],
+      ['clean'],
+    ],
+  },
+};
 </script>
 
 <template>
   <el-form
-   :model="form" ref="formRef" 
-  label-width="80px" 
-  class = 'el-form-grid'>
-    <el-form-item 
-      label="工单标题" 
-      label-position = "top"
-      prop="ticketTitle"
-      :rules="[{ required: true, message: '请输入工单标题' }]">
-      <el-input v-model="form.ticketTitle" placeholder = "请输入工单标题" />
+    ref="formRef"
+    :model="form"
+    label-width="80px"
+    class="el-form-grid"
+  >
+    <!-- 工单标题 -->
+    <el-form-item
+      label="工单标题"
+      prop="WorkOrderHeading"
+      :rules="[{ required: true, message: '请输入工单标题' }]"
+    >
+      <el-input v-model="form.WorkOrderHeading" placeholder="请输入工单标题" />
     </el-form-item>
 
+    <!-- 工单内容 -->
     <el-form-item
       label="工单内容"
-      prop="ticketContent"
-      label-position = "top"
-      :rules="[{ required: true, message: '请输入工单内容' }]">
-      <div class = 'ql-editor-container'>
-        <QuillEditor 
-          v-model:content="form.ticketContent"
-          placeholder="请输入工单内容" 
+      prop="WorkOrderContent"
+      :rules="[{ required: true, message: '请输入工单内容' }]"
+    >
+      <div class="editor-container">
+        <QuillEditor
+          v-model:content="form.WorkOrderContent"
+          content-type="html"
           :options="editorOptions"
-          class="ql-editor" 
-      />
+          class="quill-editor"
+        />
       </div>
     </el-form-item>
 
-    <el-form-item
-      label="上传附件"
-      label-position = "top"
-    >
-      <RouterLink to = '/input-ticket/upload-attachments'>
+    <!-- 上传附件 -->
+    <el-form-item label="上传附件">
+      <RouterLink to="/input-ticket/upload-attachments">
         <upload-one theme="outline" size="24" fill="#333" />
-        <span>上传附件</span>  
+        <span>上传附件</span>
       </RouterLink>
-  
     </el-form-item>
 
-
+    <!-- 优先级 -->
     <el-form-item
       label="优先级"
-      label-position="top"
-      prop="ticketPriority"
-      :rules="[{ required: true, message: '请选择优先级' }]">
-      <el-radio-group v-model="form.ticketPriority">
-        <!-- 紧急（红色） -->
+      prop="Priority"
+      :rules="[{ required: true, message: '请选择优先级' }]"
+    >
+      <el-radio-group v-model="form.Priority">
         <el-radio :value="0">
           <div class="priority-color-block" style="background: #FF0000"></div>
           紧急
         </el-radio>
-
-        <!-- 高（粉红） -->
         <el-radio :value="1">
           <div class="priority-color-block" style="background: #FFC0CB"></div>
           高
         </el-radio>
-
-        <!-- 一般（蓝色） -->
         <el-radio :value="2">
           <div class="priority-color-block" style="background: #409EFF"></div>
           一般
         </el-radio>
-
-        <!-- 低（绿色） -->
         <el-radio :value="3">
           <div class="priority-color-block" style="background: #67C23A"></div>
           低
         </el-radio>
       </el-radio-group>
-  </el-form-item>
+    </el-form-item>
+
+    <!-- 联系人 -->
+    <el-form-item
+      label="联系人"
+      prop="contact_person"
+      :rules="[{ required: true, message: '请输入联系人' }]"
+    >
+      <el-input v-model="form.contact_person" />
+    </el-form-item>
+
+    <!-- 联系电话 -->
+    <el-form-item
+      label="联系电话"
+      prop="contact_number"
+      :rules="[
+        { required: true, message: '请输入联系电话' },
+        { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号码' }
+      ]"
+    >
+      <el-input v-model="form.contact_number" />
+    </el-form-item>
 
     <el-form-item>
       <el-button @click="onCancel">取消</el-button>
@@ -172,7 +168,6 @@ const editorOptions= {
 </template>
 
 <style scoped>
-
 .priority-color-block {
   display: inline-block;
   width: 16px;
@@ -183,34 +178,26 @@ const editorOptions= {
   border: 1px solid rgba(0,0,0,0.1);
 }
 
-/* 选中状态放大效果 */
 .el-radio.is-checked .priority-color-block {
   transform: scale(1.2);
   transition: transform 0.3s;
 }
 
-.el-form-grid{
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 20px;
-  font-weight: bold;
-  display:flex;
-  flex-direction: column;
-  width:80%;
-  height:80%;
-  gap:20px;
-  justify-content: center;
-  margin:20px;
+.el-form-grid {
+  width: 80%;
+  margin: 20px auto;
 }
 
-.ql-editor-container{
-  display:flex;
-  flex-direction: column;
-  height:300px;
-  width:1500px;
+.editor-container {
+  width: 100%;
+  height: 400px;
 }
 
-.ql-editor {
- height:500px;
- width:500px;
+.quill-editor {
+  height: 350px;
+}
+
+:deep(.ql-container) {
+  height: calc(100% - 42px);
 }
 </style>

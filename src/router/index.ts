@@ -12,7 +12,7 @@ import SignIn from "@/pages/sign/SignIn.vue";
 import SignUp from "@/pages/sign/SignUp.vue";
 
 import ChangePassword from '@/pages/ChangePassword/index.vue'
-import InputTicket from '@/pages/InputTicket/index.vue'
+import InputTicket from '@/pages/InputTicket/index.vue' //该页面不使用登录认证，新建一个单独的路由不适用登录认证。
 import UploadAttachments from '@/pages/InputTicket/Upload/index.vue'
 
 const history = createWebHashHistory();
@@ -35,7 +35,7 @@ const routes = [
         component:SignUp
     },
     {
-        path:'/all-tickets',
+        path:'/home',
         component:AllTickets
     },
 
@@ -69,7 +69,8 @@ const routes = [
     {
         path:'/change-password',
         component:ChangePassword
-    }
+    },
+    
 ]
 
 export const router = createRouter({

@@ -44,7 +44,6 @@ const uploadFiles = async () => {
   }
 
   isUploading.value = true;
-  // const ticketId = useTicketIDStore().ticketId;
   const ticketId = localStorage.getItem('ticketId') || ''
 
   try {

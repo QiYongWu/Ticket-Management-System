@@ -1,16 +1,61 @@
 <script setup lang="ts" name="SearchTicket">
-import { ref } from 'vue'
+import axios from 'axios'
+import { onUnmounted, reactive, ref,watch } from 'vue'
 import { Search } from '@icon-park/vue-next'
-
+import ShowTickets from './ShowTickets.vue';
+const id = ref('');
 const searchTicket = ref('')
 const isFocus = ref(false)
+const dates = ref('')
+let searchResult = reactive([])
 
-function SearchTicket() {
-  if (!searchTicket.value) {
-    window.alert('请输入需要搜索的内容！')
-  } else {
-    console.log('search start')
-    // 实际搜索逻辑
+function formatDate(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function HandleSearch() {
+  const [start_time, end_time] = dates.value
+  // 将日期格式化为 "YYYY-MM-DD"
+  const formattedStartTime = formatDate(start_time)
+  const formattedEndTime = formatDate(end_time)
+  console.log(formattedStartTime, formattedEndTime);
+  const data = {
+    "method":"ticket.list",
+    "params":{
+       "start_time":formattedStartTime,
+       "end_time" : formattedEndTime
+    }
+}
+console.log(data);
+  axios.post('http://222.215.137.44:8084/api_jsonrpc/',data)
+  .then((res) =>{
+    const resultObj = JSON.parse(res.data.result);
+    
+    searchResult = resultObj;
+    console.log(...resultObj);
+    // console.log(res.data.result)
+  })
+}
+
+
+
+
+function SearchTicketAttachmentById(){
+  if(id.value){
+    const data = {
+      "method":"files.list",
+      "params":{
+        feelec_template_id:id.value
+      }
+    }
+    axios.post('http://222.215.137.44:8084/api_jsonrpc/',data)
+    .then((res) =>{
+     const result = JSON.parse(res.data.result)
+      console.log(...result)
+    })
   }
 }
 </script>
@@ -25,29 +70,71 @@ function SearchTicket() {
         class="search-icon"
       />
       <input
-        v-model="searchTicket"
+        v-model="id"
         type="text"
-        placeholder="搜索工单..."
+        placeholder="请输入需要搜索的工单的附件的id"
         class="search-input"
         @focus="isFocus = true"
         @blur="isFocus = false"
-        @keyup.enter="SearchTicket"
+        @keyup.enter="SearchTicketAttachmentById"
       />
       <button
         v-if="searchTicket"
         class="clear-btn"
-        @click="searchTicket = ''"
+        @click="SearchTicketAttachmentById"
       >
         &times;
       </button>
     </div>
-    <button class="search-btn" @click="SearchTicket">
+    <button class="search-btn" @click="SearchTicketAttachmentById">
       <Search theme="filled" size="18" fill="#fff" />
     </button>
   </div>
+
+  <div class="demo-date-picker">
+    <div class="block">
+      <span class="demonstration">选择工单创建时的时间范围来搜索工单</span>
+      <el-date-picker
+        v-model="dates"
+        type="daterange"
+        start-placeholder="开始时间"
+        end-placeholder="结束时间"
+        :default-value="[new Date(2025, 4, 1), new Date(2025, 4, 7)]"
+        unlink-panels="true"
+
+      />
+      <el-button type="primary" @click="HandleSearch">搜索工单</el-button>
+    </div>
+  </div>
+
+  <ShowTickets :showTickets = "searchResult" />
+
 </template>
 
 <style scoped>
+/* 样式代码保持不变 */
+.demo-date-picker {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.demo-date-picker .block {
+  padding: 30px 0;
+  text-align: center;
+  border-right: solid 1px var(--el-border-color);
+  flex: 1;
+}
+.demo-date-picker .block:last-child {
+  border-right: none;
+}
+.demo-date-picker .demonstration {
+  display: block;
+  color: var(--el-text-color-secondary);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
 .search-container {
   display: inline-flex;
   align-items: center;

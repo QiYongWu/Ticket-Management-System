@@ -1,6 +1,7 @@
 <script lang="ts" name = "SignIn" setup>
   import { reactive } from 'vue'
   import axios from 'axios';
+  import {router} from '@/router/index'
   const signInForm = reactive({
     'username':'',
     'password':''
@@ -10,25 +11,20 @@
     if(signInForm.username && signInForm.password){
         console.log('login start');
         axios.post('http://222.215.137.44:8084/login/', signInForm)
-        .then(function (response) {
-
-            if(response.data.success){
-              console.log(response)
-              if(response.data.message){
-                window.alert(response.data.message)
+        .then( (response) => {
+              localStorage.setItem('jwt_token', response.data.token);  //存储token
+              const msg = response.data.message;
+              if(!response.data.success){     //登录失败，显示信息
+                window.alert(msg)
               }
 
-              else{
+              else if(response.data.success){        //登录成功时无返回
+                
                 window.alert('登录成功！')
               }
-              localStorage.setItem('jwt_token', response.data.token);
-
             }
-            else{
-                window.alert(response.data.message)
-            }
-          })
-
+            
+          )
         .catch(function (error) {
             console.log(error);
         });
