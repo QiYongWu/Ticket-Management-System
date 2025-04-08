@@ -13,6 +13,7 @@ import axios from 'axios';
 //添加全局请求拦截器
 axios.interceptors.request.use(
   config => {
+    //发起请求前的设置
     //请求前加上token，用于前后端通信验证
     const token = localStorage.getItem('jwt_token') || '';
     if (token) {
@@ -25,6 +26,35 @@ axios.interceptors.request.use(
   console.log('请求发生了错误')
   return Promise.reject(error);
 });
+
+
+// 添加响应拦截器
+axios.interceptors.response.use(
+  response =>{
+    const stateCode = response.data.code;
+    switch(stateCode){
+      case 1003 :  {
+        window.alert('注意，您还未登录');
+        router.push('/sign-in');
+      }
+
+      case 1001 :{
+        window.alert('不好意思，不支持该请求方式');
+      }
+
+      case 1002 :{
+        window.alert('不好意思，登录已经超时');
+        router.push('/sign-in');
+      }
+
+      case 0 :{
+        window.alert('请求成功')
+      }
+    }
+
+    return response;
+  }
+)
 
 
 
