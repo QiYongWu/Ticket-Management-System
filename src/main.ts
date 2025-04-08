@@ -10,9 +10,10 @@ import axios from 'axios';
 
 
 
-//设置全局拦截器
+//添加全局请求拦截器
 axios.interceptors.request.use(
   config => {
+    //请求前加上token，用于前后端通信验证
     const token = localStorage.getItem('jwt_token') || '';
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -21,6 +22,7 @@ axios.interceptors.request.use(
     return config;
   },
  error => {
+  console.log('请求发生了错误')
   return Promise.reject(error);
 });
 

@@ -12,14 +12,14 @@
         console.log('login start');
         axios.post('http://222.215.137.44:8084/login/', signInForm)
         .then( (response) => {
-              localStorage.setItem('jwt_token', response.data.token);  //存储token
+              localStorage.setItem('jwt_token', response.data.token || '');  //存储token
               const msg = response.data.message;
               if(!response.data.success){     //登录失败，显示信息
                 window.alert(msg)
               }
 
               else if(response.data.success){        //登录成功时无返回
-                
+    
                 window.alert('登录成功！')
               }
             }
