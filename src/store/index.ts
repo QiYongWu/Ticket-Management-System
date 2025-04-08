@@ -7,3 +7,14 @@ export const useTicketIDStore = defineStore('feelec_template_id',{
     }
    }
 })
+
+
+export const useUserStatesStore = defineStore('userStatesStore',{
+    state(){
+        return { 
+                                //response.data.code
+            isLogin : false,    //1003
+            isTimeout : false,  //1002
+        }
+    }
+})

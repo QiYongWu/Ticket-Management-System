@@ -23,9 +23,10 @@ const routes = [
     }
     ,
     {
-        path:'/input-ticket',
+        path:'/',        //此页面不需要登录就能看
         component:InputTicket
     },
+
     {
         path:'/sign-in',
         component:SignIn
@@ -34,6 +35,7 @@ const routes = [
         path:'/sign-up',
         component:SignUp
     },
+    
     {
         path:'/home',
         component:AllTickets
