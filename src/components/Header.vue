@@ -47,7 +47,10 @@ const userName = computed(() =>{
 
         <el-dropdown class="user-menu">
           <el-button class="user-btn" circle>
-            <el-icon><User /></el-icon>
+            <el-icon>
+              <User v-if="!isLogin" />
+              <img src = "@/assets/logo.svg" v-else />
+            </el-icon>
           </el-button>
           <template #dropdown>
             <el-dropdown-menu class="dropdown-menu">
