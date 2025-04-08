@@ -13,8 +13,12 @@ const isLogin = computed(()=>{
   return useUserStatesStore().isLogin;
 })
 
+// const userName = computed(() =>{
+//   return  useUserStatesStore().userName
+// })
+
 const userName = computed(() =>{
-  return  useUserStatesStore().userName
+  return localStorage.getItem('userName') || '';
 })
 </script>
 
@@ -25,7 +29,7 @@ const userName = computed(() =>{
       <div class="brand" @click="router.push('/home')">
         <el-icon class="logo-icon"><MagicStick /></el-icon>
         <h1 class="title">工单管理系统</h1>
-        <h3 style = "margin-left: 30px;;">欢迎 : {{ userName }}</h3>
+        <h3 style = "margin-left: 30px;;" v-if="userName">欢迎 : {{ userName }}</h3>
       </div>
 
      

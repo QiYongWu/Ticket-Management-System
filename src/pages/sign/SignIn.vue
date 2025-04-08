@@ -23,6 +23,8 @@ import { useUserStatesStore } from '@/store';
               else if(response.data.success){        //登录成功时无返回
                 window.alert('登录成功！');
                 router.push('/home');
+                localStorage.setItem('isLogin','true');
+                localStorage.setItem('userName',signInForm.username)
                 useUserStatesStore().userName = signInForm.username;
               }
             }

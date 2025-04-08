@@ -13,6 +13,15 @@ function SetUsersTate(){
   useUserStatesStore().isLogin = true;
 }
 
+function SetLoginState(bool:boolean){
+  if(bool){
+    localStorage.setItem('isLogin','true')
+  }
+  else{
+    localStorage.setItem('isLogin','')
+  }
+}
+
 //添加全局请求拦截器
 axios.interceptors.request.use(
   config => {
@@ -39,6 +48,7 @@ axios.interceptors.response.use(
       case 1003 :  {
         window.alert('注意，您还未登录');
         useUserStatesStore().isLogin = false;  //存储用户的登录状态
+        SetLoginState(false);
         router.push('/sign-in');
       }
 
@@ -50,15 +60,18 @@ axios.interceptors.response.use(
       case 1002 :{
         window.alert('不好意思，登录已经超时');
         useUserStatesStore().isLogin = false;
+        SetLoginState(false)
         router.push('/sign-in');
       }
 
       case 0 :{
         window.alert('请求成功');
+        SetLoginState(true);
         SetUsersTate();
       }
 
       default:{
+        SetLoginState(true)
         SetUsersTate();
       }
     }
