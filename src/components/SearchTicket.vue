@@ -1,6 +1,6 @@
 <script setup lang="ts" name="SearchTicket">
 import axios from 'axios'
-import { onUnmounted, reactive, ref,watch } from 'vue'
+import { onMounted, onUnmounted, reactive, ref,watch } from 'vue'
 import { Search } from '@icon-park/vue-next'
 import ShowTickets from './ShowTickets.vue';
 const id = ref('');
@@ -16,6 +16,39 @@ function formatDate(date: Date): string {
   const day = String(date.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
 }
+
+const defaultStartDate = '2025-04-01';
+const defaultEndDate =formatDate(new Date());
+
+onMounted(() =>{
+  axios.post('http://222.215.137.44:8084/api_jsonrpc/',
+  {
+    "method":"ticket.list",
+    "params":{
+       "start_time": defaultStartDate,
+       "end_time" : defaultEndDate
+    }
+})
+  .then((res) =>{
+    if(searchResult.length !== 0){
+        isSearchTickets.value = false;
+        searchResult = [];
+      }
+    const resultObj = JSON.parse(res.data.result);
+    console.log(...resultObj);
+    if(resultObj.length !== 0){
+      searchResult = resultObj;
+      isSearchTickets.value = true
+      console.log(res.data.result)
+    }
+
+    else{
+      isSearchTickets.value = false;
+      searchResult = [];
+    }
+
+  })
+})
 
 function HandleSearch() {
   const [start_time, end_time] = dates.value
@@ -55,6 +88,8 @@ console.log(data);
     
   })
 }
+
+
 function SearchTicketAttachmentById(){
   if(id.value){
     const data = {
