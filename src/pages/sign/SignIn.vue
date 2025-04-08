@@ -2,6 +2,7 @@
   import { reactive } from 'vue'
   import axios from 'axios';
   import {router} from '@/router/index'
+import { useUserStatesStore } from '@/store';
   const signInForm = reactive({
     'username':'',
     'password':''
@@ -12,6 +13,7 @@
         console.log('login start');
         axios.post('http://222.215.137.44:8084/login/', signInForm)
         .then( (response) => {
+          console.log(response)
               localStorage.setItem('jwt_token', response.data.token || '');  //存储token
               const msg = response.data.message;
               if(!response.data.success){     //登录失败，显示信息
@@ -19,8 +21,9 @@
               }
 
               else if(response.data.success){        //登录成功时无返回
-    
-                window.alert('登录成功！')
+                window.alert('登录成功！');
+                router.push('/home');
+                useUserStatesStore().userName = signInForm.username;
               }
             }
             

@@ -6,9 +6,12 @@ import 'element-plus/dist/index.css'
 import { createPinia } from 'pinia'
 import {install} from '@icon-park/vue-next/es/all';
 import axios from 'axios';
+import {useUserStatesStore} from '@/store/index'
 
 
-
+function SetUsersTate(){
+  useUserStatesStore().isLogin = true;
+}
 
 //添加全局请求拦截器
 axios.interceptors.request.use(
@@ -35,26 +38,36 @@ axios.interceptors.response.use(
     switch(stateCode){
       case 1003 :  {
         window.alert('注意，您还未登录');
+        useUserStatesStore().isLogin = false;  //存储用户的登录状态
         router.push('/sign-in');
       }
 
       case 1001 :{
         window.alert('不好意思，不支持该请求方式');
+        SetUsersTate();
       }
 
       case 1002 :{
         window.alert('不好意思，登录已经超时');
+        useUserStatesStore().isLogin = false;
         router.push('/sign-in');
       }
 
       case 0 :{
-        window.alert('请求成功')
+        window.alert('请求成功');
+        SetUsersTate();
+      }
+
+      default:{
+        SetUsersTate();
       }
     }
 
     return response;
   }
 )
+
+
 
 
 

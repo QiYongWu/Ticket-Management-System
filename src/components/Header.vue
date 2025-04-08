@@ -1,12 +1,21 @@
 <script lang="ts" setup name="Header">
 import { useRouter } from 'vue-router'
 import { MagicStick, Plus, User } from '@element-plus/icons-vue'
-
+import { useUserStatesStore } from '@/store'
+import {computed} from 'vue'
 const router = useRouter()
 
 function CreatedNewTicket() {
-  router.push('/input-ticket')
+  router.push('/')
 }
+
+const isLogin = computed(()=>{
+  return useUserStatesStore().isLogin;
+})
+
+const userName = computed(() =>{
+  return  useUserStatesStore().userName
+})
 </script>
 
 <template>
@@ -16,7 +25,10 @@ function CreatedNewTicket() {
       <div class="brand" @click="router.push('/home')">
         <el-icon class="logo-icon"><MagicStick /></el-icon>
         <h1 class="title">工单管理系统</h1>
+        <h3 style = "margin-left: 30px;;">欢迎 : {{ userName }}</h3>
       </div>
+
+     
 
       <!-- 右侧操作区 -->
       <div class="action-group">
@@ -35,13 +47,20 @@ function CreatedNewTicket() {
           </el-button>
           <template #dropdown>
             <el-dropdown-menu class="dropdown-menu">
-              <el-dropdown-item @click="router.push('/sign-in')">
+              <el-dropdown-item @click="router.push('/sign-in')" v-if="!isLogin">
                 <span class="menu-item">登录账户</span>
               </el-dropdown-item>
-              <el-dropdown-item @click="router.push('/sign-up')">
+
+              <el-dropdown-item @click="router.push('/sign-up')" v-if="!isLogin">
                 <span class="menu-item">注册账户</span>
               </el-dropdown-item>
-              <el-dropdown-item divided @click="router.push('/change-password')">
+
+              <el-dropdown-item @click="router.push('/sign-in')" v-if="isLogin">
+                <span class="menu-item">切换账户</span>
+              </el-dropdown-item>
+
+              <el-dropdown-item divided @click="router.push('/change-password')"
+              v-if="isLogin">
                 <span class="menu-item">修改密码</span>
               </el-dropdown-item>
             </el-dropdown-menu>
