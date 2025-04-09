@@ -134,7 +134,7 @@ const safeParseDate = (dateString: string) => {
 
             <el-descriptions-item label="工单内容" span={2}>
               <div class="content-box">
-                 ticket.WorkOrderContent
+                 {{ticket.WorkOrderContent.replace('<','').replace('>','').replace('p','').replace('/','').replace('<','').replace('>','').replace('p','')}}
               </div>
             </el-descriptions-item>
             
