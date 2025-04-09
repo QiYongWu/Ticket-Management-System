@@ -4,8 +4,8 @@
   import {router} from '@/router/index'
 import { useUserStatesStore } from '@/store';
   const signInForm = reactive({
-    'username':'',
-    'password':''
+    'username':localStorage.getItem('userName') || '',
+    'password':localStorage.getItem('password') || '',
   })
     
   function SignIn(){
@@ -17,21 +17,34 @@ import { useUserStatesStore } from '@/store';
               localStorage.setItem('jwt_token', response.data.token || '');  //存储token
               const msg = response.data.message;
               if(!response.data.success){     //登录失败，显示信息
-                window.alert(msg)
+                window.alert(msg);
+                if(msg == '密码错误！'){
+                  signInForm.password = '';
+                }
+                else {signInForm.username = '';}
+                
               }
 
               else if(response.data.success){        //登录成功时无返回
                 window.alert('登录成功！');
                 router.push('/home');
-                localStorage.setItem('isLogin','true');
-                localStorage.setItem('userName',signInForm.username)
+                localStorage.setItem('isLogin','true');  
+                //若登陆成功，则存储用户名与密码
+                localStorage.setItem('userName',signInForm.username);
+                localStorage.setItem('password',signInForm.password);
                 useUserStatesStore().userName = signInForm.username;
+
+                signInForm.username = '';
+                signInForm.password = '';
               }
             }
             
           )
         .catch(function (error) {
             console.log(error);
+            signInForm.username = '';
+            signInForm.password = '';
+
         });
   }
 

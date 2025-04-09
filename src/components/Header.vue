@@ -2,7 +2,8 @@
 import { useRouter } from 'vue-router'
 import { MagicStick, Plus, User } from '@element-plus/icons-vue'
 import { useUserStatesStore } from '@/store'
-import {computed} from 'vue'
+import {computed, onMounted, onUnmounted, watch} from 'vue'
+
 const router = useRouter()
 
 function CreatedNewTicket() {
@@ -17,9 +18,12 @@ const isLogin = computed(()=>{
 //   return  useUserStatesStore().userName
 // })
 
+
 const userName = computed(() =>{
   return localStorage.getItem('userName') || '';
 })
+
+
 </script>
 
 <template>

@@ -50,35 +50,41 @@ const routes = [
 
     {
         path:'/my-tickets',
+        name : 'MyTickets',
         components:MyTickets,
         meta: { requiresAuth: true }  // 给需要权限的路由添加标记
     },
 
     {
         path:'/my-tickets/my-posting',
+        name:'MyPosting',
         component:MyPosting,
         meta: { requiresAuth: true }  // 给需要权限的路由添加标记
     },
 
     {
         path:'/my-tickets/my-processing',
+        name : 'MyProcessing',
         component:MyProcessing,
         meta: { requiresAuth: true }  // 给需要权限的路由添加标记
     },
 
     {
         path:'/my-tickets/my-to-be-collaborated',
+        name:'MyToBeCollaborated',
         component:MyToBeCollaborated,
         meta: { requiresAuth: true }  // 给需要权限的路由添加标记
     },
     {
         path:'/my-tickets/my-wait-reply',
+        name:'MyWaitReply',
         component:MyWaitReply,
         meta: { requiresAuth: true }  // 给需要权限的路由添加标记
     },
 
     {
         path:'/Set',
+        name:'Set',
         component:Set,
         meta: { requiresAuth: true }  // 给需要权限的路由添加标记
     },

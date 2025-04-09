@@ -8,6 +8,11 @@ import {install} from '@icon-park/vue-next/es/all';
 import axios from 'axios';
 import {useUserStatesStore} from '@/store/index'
 
+//重置账户
+function ReSetUserCount(){
+  localStorage.setItem('userName','');
+  localStorage.setItem('password','');
+}
 
 function SetUsersTate(){
   useUserStatesStore().isLogin = true;
@@ -18,7 +23,8 @@ function SetLoginState(bool:boolean){
     localStorage.setItem('isLogin','true')
   }
   else{
-    localStorage.setItem('isLogin','')
+    localStorage.setItem('isLogin','');
+    ReSetUserCount();
   }
 }
 
@@ -53,8 +59,8 @@ axios.interceptors.response.use(
       }
 
       case 1001 :{
-        window.alert('不好意思，不支持该请求方式');
-        SetUsersTate();
+        // SetUsersTate();
+        // SetLoginState(true)
       }
 
       case 1002 :{
@@ -65,14 +71,13 @@ axios.interceptors.response.use(
       }
 
       case 0 :{
-        window.alert('请求成功');
-        SetLoginState(true);
-        SetUsersTate();
+        // SetLoginState(true);
+        // SetUsersTate();
       }
 
       default:{
-        SetLoginState(true)
-        SetUsersTate();
+        // SetLoginState(true)
+        // SetUsersTate();
       }
     }
 
