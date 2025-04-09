@@ -2,9 +2,9 @@
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import { UploadOne } from '@icon-park/vue-next';
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import axios from 'axios';
-
+import { useTicketIDStore } from '@/store';
 import type { FormInstance } from 'element-plus';
 
 
@@ -24,6 +24,12 @@ function generate10DigitId() {
   const randomDigit = Math.floor(Math.random() * 10);
   return parseInt(timestampPart + randomDigit, 10);
 }
+
+onMounted(()=>{
+  //创建工单页面挂载
+  form.feelec_template_id =generate10DigitId();
+  useTicketIDStore().feelec_template_id = form.feelec_template_id;
+})
 
 function onSubmit() {
   formRef.value?.validate((valid) => {

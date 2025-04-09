@@ -3,7 +3,17 @@ import axios from 'axios';
 import { Close } from '@icon-park/vue-next';
 import { ref } from 'vue';
 import { ElMessage, ElProgress } from 'element-plus';
+import { useTicketIDStore } from '@/store';
+import { onMounted } from 'vue';
+import {router} from '@/router/index'
 
+let  feelec_template_id = ref(0)
+
+onMounted(()=>{
+  console.log('上传附件组件挂载')
+  feelec_template_id.value  =   useTicketIDStore().feelec_template_id;
+  console.log(feelec_template_id.value)
+})
 
 interface UploadFile {
   file: File;
@@ -44,7 +54,7 @@ const uploadFiles = async () => {
   }
 
   isUploading.value = true;
-  const ticketId = localStorage.getItem('ticketId') || ''
+  // const ticketId = localStorage.getItem('ticketId') || ''
 
   try {
     await Promise.all(files.value.map(async (item, index) => {
@@ -52,7 +62,7 @@ const uploadFiles = async () => {
 
       const formData = new FormData();
       formData.append('file', item.file);
-      formData.append('feelec_template_id', ticketId.toString());
+      formData.append('feelec_template_id', feelec_template_id.value.toString());
 
       files.value[index].status = 'uploading';
       
@@ -77,6 +87,7 @@ const uploadFiles = async () => {
 
     ElMessage.success('所有文件上传完成');
     files.value = [];
+    router.back();   //返回到创建工单页面
   } catch (err) {
     ElMessage.error('部分文件上传失败');
     files.value = files.value.map(f => 
@@ -90,6 +101,7 @@ const uploadFiles = async () => {
 // 移除文件
 const removeFile = (index: number) => {
   files.value.splice(index, 1);
+  router.back();
 };
 </script>
 
@@ -98,9 +110,9 @@ const removeFile = (index: number) => {
     <el-container>
       <el-header class="header-grid">
         <h1>上传附件</h1>
-        <RouterLink to="/input-ticket">
+        <el-button @click="router.back()">
           <close theme="outline" size="24" fill="#333"/>
-        </RouterLink>
+        </el-button>
       </el-header>
 
       <el-main>
