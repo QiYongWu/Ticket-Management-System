@@ -17,9 +17,12 @@ function formatDate(date: Date): string {
   const day = String(date.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
 }
-
+const today = new Date();
+let  defaultEndDate = new Date(today);
+defaultEndDate.setDate(today.getDate() + 1);
 const defaultStartDate = '2025-04-01';
-const defaultEndDate =formatDate(new Date());
+
+defaultEndDate =formatDate(defaultEndDate);
 
 if(router.currentRoute.value.path == '/home'){
   onMounted(() =>{
