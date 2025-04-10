@@ -8,25 +8,8 @@ import {install} from '@icon-park/vue-next/es/all';
 import axios from 'axios';
 import {useUserStatesStore} from '@/store/index'
 
-//重置账户
-function ReSetUserCount(){
-  localStorage.setItem('userName','');
-  localStorage.setItem('password','');
-}
+import {ReSetUserCount,SetLoginState} from '@/utils/reset'
 
-function SetUsersTate(){
-  useUserStatesStore().isLogin = true;
-}
-
-function SetLoginState(bool:boolean){
-  if(bool){
-    localStorage.setItem('isLogin','true')
-  }
-  else{
-    localStorage.setItem('isLogin','');
-    ReSetUserCount();
-  }
-}
 
 //添加全局请求拦截器
 axios.interceptors.request.use(
@@ -45,7 +28,6 @@ axios.interceptors.request.use(
   return Promise.reject(error);
 });
 
-
 // 添加响应拦截器
 axios.interceptors.response.use(
   response =>{
@@ -53,42 +35,30 @@ axios.interceptors.response.use(
     switch(stateCode){
       case 1003 :  {
         window.alert('注意，您还未登录');
-        useUserStatesStore().isLogin = false;  //存储用户的登录状态
-        SetLoginState(false);
+        SetLoginState(false); //重置账户与设置登录状态为未登录 
         router.push('/sign-in');
       }
-
-      case 1001 :{
-        // SetUsersTate();
-        // SetLoginState(true)
+      case 1001 :{  //不允许请求
       }
 
       case 1002 :{
         window.alert('不好意思，登录已经超时');
-        useUserStatesStore().isLogin = false;
-        SetLoginState(false)
+        SetLoginState(false);  //重置账户与设置登录状态为未登录   
         router.push('/sign-in');
       }
 
-      case 0 :{
-        // SetLoginState(true);
-        // SetUsersTate();
+      case 0 :{   //成功
+        
       }
 
       default:{
-        // SetLoginState(true)
-        // SetUsersTate();
+       
       }
     }
 
     return response;
   }
 )
-
-
-
-
-
 
 
 const app = createApp(App)

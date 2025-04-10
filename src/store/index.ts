@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+//创建工单的id
 export const useTicketIDStore = defineStore('feelec_template_id',{
    state() {
     return {
