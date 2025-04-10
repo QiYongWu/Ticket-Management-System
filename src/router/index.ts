@@ -15,7 +15,6 @@ import ChangePassword from '@/pages/ChangePassword/index.vue'
 import InputTicket from '@/pages/InputTicket/index.vue' //该页面不使用登录认证，新建一个单独的路由不适用登录认证。
 import UploadAttachments from '@/pages/InputTicket/Upload/index.vue'
 
-import { useUserStatesStore } from "@/store";  //获取用户的状态
 
 const history = createWebHashHistory();
 const routes = [
@@ -105,7 +104,6 @@ const router = createRouter({
 
 router.beforeEach(      //router.beforeEach 是一个全局导航守卫，它允许你在路由跳转前执行一些操作
     (to,from,next) =>{
-    // const isUserLogIn = useUserStatesStore().isLogin;   //用户登录状态
     const isUserLogin = localStorage.getItem('isLogin') || ''
      // 检查目标路由是否需要权限验证
   if (to.matched.some(record => record.meta.requiresAuth)) {

@@ -1,27 +1,22 @@
 <script lang="ts" setup name="Header">
 import { useRouter } from 'vue-router'
 import { MagicStick, Plus, User } from '@element-plus/icons-vue'
-import { useUserStatesStore } from '@/store'
-import {computed, onMounted, onUnmounted, watch} from 'vue'
+
+import {computed, onMounted, onUnmounted, watch,ref} from 'vue'
 
 const router = useRouter()
-
+let isLogin = ref('')
+let userName = ref('')
 function CreatedNewTicket() {
   router.push('/')
 }
 
-const isLogin = computed(()=>{
-  return useUserStatesStore().isLogin;
+onMounted(() =>{
+  console.log('Header挂载')
+  userName.value = localStorage.getItem('userName') || '';
+  isLogin.value = localStorage.getItem('isLogin') || ''
 })
-
-// const userName = computed(() =>{
-//   return  useUserStatesStore().userName
-// })
-
-
-const userName = computed(() =>{
-  return localStorage.getItem('userName') || '';
-})
+  
 
 
 </script>

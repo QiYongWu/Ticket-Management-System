@@ -2,7 +2,6 @@
   import { reactive } from 'vue'
   import axios from 'axios';
   import {router} from '@/router/index'
-import { useUserStatesStore } from '@/store';
   const signInForm = reactive({
     'username':localStorage.getItem('userName') || '',
     'password':localStorage.getItem('password') || '',
@@ -32,8 +31,7 @@ import { useUserStatesStore } from '@/store';
                 //若登陆成功，则存储用户名与密码
                 localStorage.setItem('userName',signInForm.username);
                 localStorage.setItem('password',signInForm.password);
-                useUserStatesStore().userName = signInForm.username;
-
+              
                 signInForm.username = '';
                 signInForm.password = '';
               }

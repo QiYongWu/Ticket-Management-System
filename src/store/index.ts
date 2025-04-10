@@ -9,12 +9,4 @@ export const useTicketIDStore = defineStore('feelec_template_id',{
 })
 
 
-export const useUserStatesStore = defineStore('userStatesStore',{
-    state(){
-        return { 
-                                //response.data.code
-            isLogin : true,      //1003
-            userName : ''        //当前登陆人
-        }
-    }
-})
+//不能使用pinia来管理用户状态，一刷新就会丢失

@@ -6,7 +6,7 @@ import 'element-plus/dist/index.css'
 import { createPinia } from 'pinia'
 import {install} from '@icon-park/vue-next/es/all';
 import axios from 'axios';
-import {useUserStatesStore} from '@/store/index'
+
 
 import {ReSetUserCount,SetLoginState} from '@/utils/reset'
 
@@ -71,6 +71,3 @@ app.use(pinia);
 
 app.mount('#app')
 
-
-//母日期设置
-export const startDate = '2025-01-01'
