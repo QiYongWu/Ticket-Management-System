@@ -5,14 +5,12 @@ import { ref } from 'vue';
 import { ElMessage, ElProgress } from 'element-plus';
 import { useTicketIDStore } from '@/store';
 import { onMounted } from 'vue';
-import {router} from '@/router/index'
-
+import { useDrawerStore } from '@/store';
 let  feelec_template_id = ref(0)
-
+const drawer = ref(useDrawerStore().drawer);
 onMounted(()=>{
-  console.log('上传附件组件挂载')
   feelec_template_id.value  =   useTicketIDStore().feelec_template_id;
-  console.log(feelec_template_id.value)
+  console.log(`console.log('上传附件组件挂载')，绑定的工单id：${feelec_template_id.value}`)
 })
 
 interface UploadFile {
@@ -87,7 +85,7 @@ const uploadFiles = async () => {
 
     ElMessage.success('所有文件上传完成');
     files.value = [];
-    router.back();   //返回到创建工单页面
+   
   } catch (err) {
     ElMessage.error('部分文件上传失败');
     files.value = files.value.map(f => 
@@ -101,7 +99,7 @@ const uploadFiles = async () => {
 // 移除文件
 const removeFile = (index: number) => {
   files.value.splice(index, 1);
-  router.back();
+ 
 };
 </script>
 
@@ -110,7 +108,7 @@ const removeFile = (index: number) => {
     <el-container>
       <el-header class="header-grid">
         <h1>上传附件</h1>
-        <el-button @click="router.back()">
+        <el-button>
           <close theme="outline" size="24" fill="#333"/>
         </el-button>
       </el-header>
@@ -165,7 +163,6 @@ const removeFile = (index: number) => {
                   @click="uploadFiles"
                   type="warning"
                   size="small"
-
                 >
                   重试
                 </el-button>
@@ -184,17 +181,14 @@ const removeFile = (index: number) => {
         >
           {{ isUploading ? '上传中...' : '开始上传' }}
         </el-button>
-
       </el-main>
     </el-container>
   </div>
 </template>
 
 <style scoped>
-.upload-button{
 
-  margin-left:90%;
-}
+
 .header-grid {
   display: flex;
   justify-content: space-between;

@@ -5,8 +5,11 @@ import { UploadOne } from '@icon-park/vue-next';
 import { onMounted, reactive, ref } from 'vue';
 import axios from 'axios';
 import { useTicketIDStore } from '@/store';
+import { useDrawerStore } from '@/store';
 import type { FormInstance } from 'element-plus';
+import UploadAttachments from './Upload/index.vue'
 
+const drawer = ref(useDrawerStore().drawer);
 
 const form = reactive({
   feelec_template_id: 0,
@@ -26,9 +29,15 @@ function generate10DigitId() {
 }
 
 onMounted(()=>{
-  //创建工单页面挂载
+  
+  //创建工单页面挂载,数据重新创建，随机分配id给该工单
   form.feelec_template_id =generate10DigitId();
+
+  //使用pinia来存储工单id，页面刷新会丢失/重新分配 数据
   useTicketIDStore().feelec_template_id = form.feelec_template_id;
+
+  //debug
+  console.log(`上传工单页面挂载,随机分配得的工单id:${form.feelec_template_id}`)
 })
 
 function onSubmit() {
@@ -113,10 +122,10 @@ const editorOptions = {
 
     <!-- 上传附件 -->
     <el-form-item label="上传附件">
-      <RouterLink to="/input-ticket/upload-attachments">
+      <el-button style ="border: none;" @click = "drawer=true">
         <upload-one theme="outline" size="24" fill="#333" />
         <span>上传附件</span>
-      </RouterLink>
+      </el-button>
     </el-form-item>
 
     <!-- 优先级 -->
@@ -171,6 +180,10 @@ const editorOptions = {
       <el-button type="primary" @click="onSubmit">提交</el-button>
     </el-form-item>
   </el-form>
+
+  <el-drawer v-model="drawer" title="I am the title" :with-header="false">
+    <UploadAttachments />
+  </el-drawer>
 </template>
 
 <style scoped>

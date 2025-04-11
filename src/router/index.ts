@@ -18,16 +18,25 @@ import UploadAttachments from '@/pages/InputTicket/Upload/index.vue'
 
 const history = createWebHashHistory();
 const routes = [
-    //不需要权限就能访问
+    //不需要权限就能访问上传附件
     {
         path:'/input-ticket/upload-attachments',
-        component:UploadAttachments
+        component:UploadAttachments,
+        name:'UploadAttachments',
+        meta: {
+            keepAlive: true // 标记需要缓存的组件
+          }
     }
     ,
     {
         path:'/',        //上传工单页面不需要登录就能看
-        component:InputTicket
+        component:InputTicket,
+        name:'InputTicket',
+        meta: {
+            keepAlive: true // 标记需要缓存的组件
+          }
     },
+    
 
     {
         path:'/sign-in',

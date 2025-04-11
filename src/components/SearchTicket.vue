@@ -89,10 +89,7 @@ console.log(data);
     else{
       isSearchTickets.value = false;
       searchResult = [];
-    }
-
-   
-    
+    } 
   })
 }
 
