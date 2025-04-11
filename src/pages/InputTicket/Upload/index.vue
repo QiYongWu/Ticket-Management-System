@@ -6,26 +6,22 @@ import { ElMessage, ElProgress } from 'element-plus';
 import { useTicketIDStore } from '@/store';
 import { onMounted } from 'vue';
 import { useDrawerStore } from '@/store';
+import {type UploadFile} from '@/types/index'
 let  feelec_template_id = ref(0)
-const drawer = ref(useDrawerStore().drawer);
+
+
 onMounted(()=>{
   feelec_template_id.value  =   useTicketIDStore().feelec_template_id;
   console.log(`console.log('上传附件组件挂载')，绑定的工单id：${feelec_template_id.value}`)
 })
-
-interface UploadFile {
-  file: File;
-  progress: number;
-  status: 'pending' | 'uploading' | 'success' | 'error';
-}
 
 const files = ref<UploadFile[]>([]);
 const isUploading = ref(false);
 
 // 处理文件选择
 const handleFileChange = (e: Event) => {
-  const input = e.target as HTMLInputElement;
-  const newFiles = Array.from(input.files || []);
+const input = e.target as HTMLInputElement;
+const newFiles = Array.from(input.files || []);
   
   // 过滤重复文件
   const existingNames = files.value.map(f => f.file.name);
@@ -40,7 +36,6 @@ const handleFileChange = (e: Event) => {
       status: 'pending' as const
     }))
   ];
-
   input.value = ''; // 清空选择器
 };
 
@@ -52,7 +47,6 @@ const uploadFiles = async () => {
   }
 
   isUploading.value = true;
-  // const ticketId = localStorage.getItem('ticketId') || ''
 
   try {
     await Promise.all(files.value.map(async (item, index) => {

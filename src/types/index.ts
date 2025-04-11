@@ -9,3 +9,9 @@ export interface LoginForm {
   username: string
   password: string
 }
+
+export interface UploadFile {
+  file: File;
+  progress: number;
+  status: 'pending' | 'uploading' | 'success' | 'error';
+}
