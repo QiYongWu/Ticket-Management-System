@@ -5,13 +5,12 @@ import { ref } from 'vue';
 import { ElMessage, ElProgress } from 'element-plus';
 import { useTicketIDStore } from '@/store';
 import { onMounted } from 'vue';
-import { useDrawerStore } from '@/store';
 import {type UploadFile} from '@/types/index'
 let  feelec_template_id = ref(0)
 
 
 onMounted(()=>{
-  feelec_template_id.value  =   useTicketIDStore().feelec_template_id;
+  feelec_template_id.value  =  useTicketIDStore().feelec_template_id;
   console.log(`console.log('上传附件组件挂载')，绑定的工单id：${feelec_template_id.value}`)
 })
 

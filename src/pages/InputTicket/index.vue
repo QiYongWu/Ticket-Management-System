@@ -20,6 +20,8 @@ const form = reactive({
   contact_number: ''
 });
 
+
+
 const formRef = ref<FormInstance>();
 
 function generate10DigitId() {
@@ -43,10 +45,7 @@ onMounted(()=>{
 function onSubmit() {
   formRef.value?.validate((valid) => {
     if (valid) {
-      form.feelec_template_id = generate10DigitId();
-
-      localStorage.setItem('ticketId', form.feelec_template_id.toString());
-
+      
       axios.post('http://222.215.137.44:8084/ticket/ticket_create/', form, {
         headers: {
           'Content-Type': 'application/json'
