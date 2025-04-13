@@ -51,7 +51,7 @@ const SearchTicketAttachmentById = async (id:number) => {
     const result = await handleApiRequest('files.list', {
       feelec_template_id: id
     })
-    useTicketsInfoStore().ticketsAttachments.push(...result);
+    useTicketsInfoStore().ticketsAttachments.push(result);
   } catch {
     isSearchTickets.value = false
   }

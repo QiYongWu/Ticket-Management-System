@@ -70,7 +70,7 @@ const uploadFiles = async () => {
           }
         }
       ).then((response) => {
-        window.alert(response.data.message);
+       ElMessage.info(response.data.message);
       });
 
       files.value[index].status = 'success';

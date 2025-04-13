@@ -1,4 +1,5 @@
 <script lang="ts" name = "SignIn" setup>
+  import { ElMessage } from 'element-plus';
   import { reactive } from 'vue'
   import axios from 'axios';
   import {router} from '@/router/index'
@@ -16,7 +17,7 @@
               localStorage.setItem('jwt_token', response.data.token || '');  //存储token
               const msg = response.data.message;
               if(!response.data.success){     //登录失败，显示信息
-                window.alert(msg);
+                ElMessage.info(msg);
                 if(msg == '密码错误！'){
                   signInForm.password = '';
                 }
@@ -25,7 +26,7 @@
               }
 
               else if(response.data.success){        //登录成功时无返回
-                window.alert('登录成功！');
+                ElMessage.info('登录成功！');
                 router.push('/home');
                 localStorage.setItem('isLogin','true');  
                 //若登陆成功，则存储用户名与密码
@@ -47,7 +48,7 @@
   }
 
     else{
-      window.alert('请完善所有信息')
+      ElMessage.info('请完善所有信息')
     }
   }
 

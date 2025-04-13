@@ -1,5 +1,6 @@
 <script name="ChangePassword" setup lang="ts">
 import axios from 'axios';
+import { ElMessage } from 'element-plus';
 import { ref } from 'vue';
 
 const oldPassword = ref('');
@@ -18,7 +19,7 @@ function ChangePassword() {
 
     axios.post('http://222.215.137.44:8084/api_jsonrpc/', userInfo)
     .then((res) => {
-      window.alert(res.data.message);
+      ElMessage.info(res.data.message);
       if(res.data.message == '密码修改成功！'){
         isLoading.value = true
       }

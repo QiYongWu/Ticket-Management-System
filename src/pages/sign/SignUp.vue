@@ -2,7 +2,7 @@
 import { reactive,ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
-
+import   {ElMessage} from 'element-plus'
 const router = useRouter()
 const isLoading = ref(false)
 
@@ -56,13 +56,13 @@ async function SignUp() {
     isLoading.value = true
     const response = await axios.post('http://222.215.137.44:8084/register/', signUpForm)
     
-    window.alert(response.data.message);
+    ElMessage.info(response.data.message);
     if(response.data.success) {
       router.push('/sign-in')
     }
   } catch (error) {
     console.error('注册失败:', error)
-    window.alert('注册失败，请稍后重试')
+    ElMessage.info('注册失败，请稍后重试')
   } finally {
     isLoading.value = false
   }

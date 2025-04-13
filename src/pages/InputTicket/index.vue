@@ -6,7 +6,7 @@ import { onMounted, reactive, ref } from 'vue';
 import axios from 'axios';
 import { useTicketIDStore } from '@/store';
 import { useDrawerStore } from '@/store';
-import type { FormInstance } from 'element-plus';
+import { ElMessage, type FormInstance } from 'element-plus';
 import UploadAttachments from './Upload/index.vue'
 
 const drawer = ref(useDrawerStore().drawer);
@@ -54,11 +54,11 @@ function onSubmit() {
       })
       .then((response) => {
         console.log(response)
-        window.alert(response.data.message);
+       ElMessage.info(response.data.message);
       })
       .catch((error) => {
         console.error('提交失败:', error);
-        window.alert('提交失败，请稍后重试');
+      ElMessage.info('提交失败，请稍后重试');
       });
     } else {
       console.log('验证失败');

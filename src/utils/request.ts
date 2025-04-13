@@ -15,9 +15,9 @@ service.interceptors.response.use(
     switch (res.code) {
       case 0: // 成功
         return res
-      case '1003':  {window.alert(res.message)} // 未登录
+      case '1003':   {ElMessage.info(res.message)} // 未登录
       case '1002':  {
-        window.alert(res.message);
+        ElMessage.info(res.message);
         handleAuthError();
         return Promise.reject(res)} // 登录超时
         
@@ -50,11 +50,11 @@ const handleAuthError = () => {
 
 // 其他错误处理（根据需求扩展）
 const handleMethodError = (msg:string) => {
-  window.alert(msg)
+  ElMessage.info(msg)
 }
 
 const handlePasswordError = (msg:string) => {
-  window.alert(msg)
+  ElMessage.info(msg)
 }
 
 
@@ -79,7 +79,7 @@ const handleApiRequest = async (method: string, params: object) => {
       method,
       params
     })
-    
+    console.log(response)
     return JSON.parse(response.data.result)
   } catch (error) {
     console.error('API请求失败:', error)

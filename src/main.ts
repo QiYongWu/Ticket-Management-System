@@ -6,7 +6,7 @@ import 'element-plus/dist/index.css'
 import { createPinia } from 'pinia'
 import {install} from '@icon-park/vue-next/es/all';
 import axios from 'axios';
-
+import { ElMessage } from 'element-plus'
 
 import {ReSetUserCount,SetLoginState} from '@/utils/reset'
 
@@ -24,7 +24,7 @@ axios.interceptors.request.use(
     return config;
   },
  error => {
-  console.log('请求发生了错误')
+  ElMessage.info('请求发生了错误')
   return Promise.reject(error);
 });
 
@@ -34,7 +34,7 @@ axios.interceptors.response.use(
     const stateCode = response.data.code;
     switch(stateCode){
       case 1003 :  {
-        window.alert('注意，您还未登录');
+       ElMessage.info('注意，您还未登录');
         SetLoginState(false); //重置账户与设置登录状态为未登录 
         router.push('/sign-in');
       }
@@ -42,7 +42,7 @@ axios.interceptors.response.use(
       }
 
       case 1002 :{
-        window.alert('不好意思，登录已经超时');
+        ElMessage.info('不好意思，登录已经超时');
         SetLoginState(false);  //重置账户与设置登录状态为未登录   
         router.push('/sign-in');
       }
