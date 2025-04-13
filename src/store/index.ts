@@ -37,7 +37,7 @@ const useDateStore = defineStore('date',{
         return {
             dates: [
                 formatDateToYMD(new Date(2025,3,1)),   //传入的月份值要-1
-                formatDateToYMD(new Date(2025,3,6))
+                formatDateToYMD(new Date(2025,3,1))
             ]
         }
     }
