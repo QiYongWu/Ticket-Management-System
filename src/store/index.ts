@@ -34,10 +34,13 @@ const useTicketsInfoStore= defineStore('ticketInfo',{
 //存储搜索的起始日期与结束日期
 const useDateStore = defineStore('date',{
     state(){
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
         return {
             dates: [
                 formatDateToYMD(new Date(2025,3,1)),   //传入的月份值要-1
-                formatDateToYMD(new Date())
+                formatDateToYMD( tomorrow)
             ]
         }
     }

@@ -5,6 +5,7 @@ import {type  TicketInfo} from '@/types/index.ts'
 import {useTicketsInfoStore} from '@/store/index'
 import  Download  from '@/components/download.vue'
 
+
 // 为每个工单维护独立的抽屉状态
 const drawerStates = ref<{ [key: string]: boolean }>({})
 
@@ -130,6 +131,7 @@ const safeParseDate = (dateString: string) => {
             </el-descriptions-item>
 
             <el-descriptions-item label="附件:" span={2}>
+             
               <Download :id="ticket.feelec_template_id" />
             </el-descriptions-item>
           

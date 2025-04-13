@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import { useTicketsInfoStore } from '@/store';
 import {defineProps, onMounted} from 'vue';
-
+import { Link } from '@icon-park/vue-next'
 let id =  defineProps(['id']);
 onMounted(()=>{
     console.log(`id:${id.id}`)
@@ -50,12 +50,19 @@ async function HandleDownload(filePath:string) {
    <div class="attachment-grid" v-for=" attachment in useTicketsInfoStore().ticketsAttachments" 
    :key = "attachment.feelec_template_id">
         <div class ="attachment-container"  v-if="attachment.feelec_template_id == id.id">
-            <link theme="outline" size="24" fill="#333"/>
-            
-            <p style="display:inline-block">{{attachment.filename}} </p>
+            <el-icon><Link size="20px" /></el-icon>
+            <p style="margin-left:10px ;display:inline-block">{{attachment.filename}} </p>
             <span style="  text-decoration: underline; margin-left:30px; color: dodgerblue;display: inline-block; cursor:pointer" type="primary" @click="HandleDownload(attachment.file_path)">
                 点击下载附件
             </span>
         </div>
    </div>
 </template>
+
+<style scoped>
+.attachment-grid{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+</style>
