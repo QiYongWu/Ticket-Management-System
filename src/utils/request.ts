@@ -1,6 +1,7 @@
 // src/utils/request.js
 import {router} from '@/router'
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
 const service = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
@@ -71,4 +72,21 @@ service.interceptors.request.use(
   });
 
 
-export default service
+  // 通用请求处理
+const handleApiRequest = async (method: string, params: object) => {
+  try {
+    const response = await axios.post('http://222.215.137.44:8084/api_jsonrpc/', {
+      method,
+      params
+    })
+    
+    return JSON.parse(response.data.result)
+  } catch (error) {
+    console.error('API请求失败:', error)
+    ElMessage.error('服务请求失败，请稍后重试')
+    throw error
+  }
+}
+
+
+export  {service,handleApiRequest}

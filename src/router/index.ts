@@ -7,6 +7,7 @@ import MyProcessing from "@/pages/MyTickets/MyProcessing.vue";
 import MyToBeCollaborated from "@/pages/MyTickets/MyToBeCollaborated.vue";
 import MyWaitReply from "@/pages/MyTickets/MyWaitReply.vue";
 import Set from "@/pages/Set/index.vue"
+import Download from "@/components/download.vue";
 
 import SignIn from "@/pages/sign/SignIn.vue";
 import SignUp from "@/pages/sign/SignUp.vue";
@@ -18,6 +19,11 @@ import UploadAttachments from '@/pages/InputTicket/Upload/index.vue'
 
 const history = createWebHashHistory();
 const routes = [
+    {
+        path:'/download-file',
+        component:Download
+
+    },
     //不需要权限就能访问上传附件
     {
         path:'/input-ticket/upload-attachments',

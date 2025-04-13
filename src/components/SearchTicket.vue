@@ -1,233 +1,182 @@
 <script setup lang="ts" name="SearchTicket">
 import axios from 'axios'
-import { onMounted, onUnmounted, reactive, ref,watch } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { Search } from '@icon-park/vue-next'
-import ShowTickets from './ShowTickets.vue';
-import {router} from '@/router/index'
-const id = ref('');
-const searchTicket = ref('')
+import ShowTickets from './ShowTickets.vue'
+import { router } from '@/router/index'
+import { type TicketInfo,type TicketAttachmentInfo } from '@/types'
+import {handleApiRequest} from '@/utils/request'
+import { ElMessage } from 'element-plus'
+
+// 响应式数据
+const id = ref('')
 const isFocus = ref(false)
-const dates = ref('')
-let searchResult = reactive([])
-let isSearchTickets = ref(false)
+const dates = ref<[Date, Date]>([new Date(2025, 3, 1), new Date()])  // 月份从0开始
+const searchResult = reactive<TicketInfo[]>([])      //存储搜索到的工单信息的结果
+const searchAttachmentResult = reactive<TicketAttachmentInfo[]>([])  //存储搜索到的工单附件信息的结果
+const isSearchTickets = ref(false);  
 
-function formatDate(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
-const today = new Date();
-let  defaultEndDate = new Date(today);
-defaultEndDate.setDate(today.getDate() + 1);
-const defaultStartDate = '2025-04-01';
+// 日期格式化（ISO 8601格式）
+const formatDate = (date: Date): string => date.toISOString().split('T')[0]
 
-defaultEndDate =formatDate(defaultEndDate);
+// 初始化加载
+onMounted(() => {
+  if (router.currentRoute.value.path === '/home') {
+    HandleSearch();
+  }
+})
 
-if(router.currentRoute.value.path == '/home'){
-  onMounted(() =>{
-    axios.post('http://222.215.137.44:8084/api_jsonrpc/',
-    {
-      "method":"ticket.list",
-      "params":{
-        "start_time": defaultStartDate,
-        "end_time" : defaultEndDate
-      }
-  })
-    .then((res) =>{
-      if(searchResult.length !== 0){
-          isSearchTickets.value = false;
-          searchResult = [];
-        }
-      const resultObj = JSON.parse(res.data.result);
-      console.log(...resultObj);
-      if(resultObj.length !== 0){
-        searchResult = resultObj;
-        isSearchTickets.value = true
-        console.log(res.data.result)
-      }
 
-      else{
-        isSearchTickets.value = false;
-        searchResult = [];
-      }
 
+// 工单搜索
+const HandleSearch = async () => {
+  try {
+    const [startDate, endDate] = dates.value
+    const result = await handleApiRequest('ticket.list', {
+      start_time: formatDate(startDate),
+      end_time: formatDate(endDate)
     })
-  })
-}
 
-
-function HandleSearch() {
-  const [start_time, end_time] = dates.value
-  // 将日期格式化为 "YYYY-MM-DD"
-  const formattedStartTime = formatDate(start_time)
-  const formattedEndTime = formatDate(end_time)
-  console.log(formattedStartTime, formattedEndTime);
-  const data = {
-    "method":"ticket.list",
-    "params":{
-       "start_time":formattedStartTime,
-       "end_time" : formattedEndTime
-    }
-}
-console.log(data);
-  axios.post('http://222.215.137.44:8084/api_jsonrpc/',data)
-  .then((res) =>{
-
-    if(searchResult.length !== 0){
-        isSearchTickets.value = false;
-        searchResult = [];
-      }
-    const resultObj = JSON.parse(res.data.result);
-    console.log(...resultObj);
-    if(resultObj.length !== 0){
-      searchResult = resultObj;
+    searchResult.splice(0, searchResult.length) // 清空数组
+    
+    if (result?.length) {
+      searchResult.push(...result)
       isSearchTickets.value = true
-      console.log(res.data.result)
+      ElMessage.success(`找到 ${result.length} 条工单记录`)
+      console.log(searchResult);
+    } else {
+      isSearchTickets.value = false
+      ElMessage.info('当前时间段没有工单记录')
     }
-
-    else{
-      isSearchTickets.value = false;
-      searchResult = [];
-    } 
-  })
-}
-
-
-function SearchTicketAttachmentById(){
-  if(id.value){
-    const data = {
-      "method":"files.list",
-      "params":{
-        feelec_template_id:id.value
-      }
-    }
-    axios.post('http://222.215.137.44:8084/api_jsonrpc/',data)
-    .then((res) =>{
-      console.log(res)
-      if(searchResult.length !== 0){
-        isSearchTickets.value = false;
-        searchResult = [];
-      }
-     const result = JSON.parse(res.data.result);
-     if(result.length !== 0){
-       searchResult = result;
-       isSearchTickets.value = true;
-     }
-      console.log(...result)
-    })
-    .catch((err) =>{
-      window.alert('系统发生错误！')
-    })
+  } catch {
+    isSearchTickets.value = false
   }
 }
+
+// 附件搜索
+const SearchTicketAttachmentById = async () => {
+  const searchId = id.value.trim()
+  if (!searchId) {
+    ElMessage.warning('请输入有效的附件ID')
+    return
+  }
+
+  try {
+    const result = await handleApiRequest('files.list', {
+      feelec_template_id: searchId
+    })
+      console.log(result);
+  
+  } catch {
+    isSearchTickets.value = false
+  }
+}
+
 </script>
 
 <template>
-
-  <div class = 'search-container'>
-
-    <div class="demo-date-picker">
-      <div class="block">
+  <div class="search-wrapper">
+    <div class="date-search-container">
+      <div class="date-picker-container">
         <el-date-picker
           v-model="dates"
           type="daterange"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
-          :default-value="[new Date(2025, 4, 1), new Date(2025, 4, 7)]"
-          unlink-panels="true"
-
+          :default-value="[new Date(2025, 3, 1), new Date()]"
+          value-format="YYYY-MM-DD"
+          format="YYYY-MM-DD"
         />
-        <el-button type="primary" @click="HandleSearch">搜索工单</el-button>
+        <el-button 
+          type="primary" 
+          @click="HandleSearch"
+          :disabled="!dates[0] || !dates[1]"
+        >
+          搜索工单
+        </el-button>
+      </div>
+
+      <div class="id-search-container" :class="{ focused: isFocus }">
+        <div class="input-wrapper">
+          <Search
+            theme="filled"
+            :size="20"
+            :fill="isFocus ? '#6366f1' : '#94a3b8'"
+            class="search-icon"
+          />
+          <input
+            v-model.trim="id"
+            type="text"
+            placeholder="请输入工单附件ID"
+            class="search-input"
+            @focus="isFocus = true"
+            @blur="isFocus = false"
+            @keyup.enter="SearchTicketAttachmentById"
+          />
+        </div>
+        <button 
+          class="search-btn"
+          @click="SearchTicketAttachmentById"
+          :disabled="!id.trim()"
+        >
+          <Search theme="filled" size="18" fill="#fff" />
+        </button>
       </div>
     </div>
 
-  <div class="search-container" :class="{ focused: isFocus }">
-    <div class="input-wrapper">
-      <Search
-        theme="filled"
-        :size="20"
-        :fill="isFocus ? '#6366f1' : '#94a3b8'"
-        class="search-icon"
+    <div class="search-results">
+      <ShowTickets 
+        :showTickets="searchResult" 
+        v-if="isSearchTickets"
+        :key="searchResult.length" 
       />
-      <input
-        v-model="id"
-        type="text"
-        placeholder="请输入需要搜索的工单的附件的id"
-        class="search-input"
-        @focus="isFocus = true"
-        @blur="isFocus = false"
-        @keyup.enter="SearchTicketAttachmentById"
-      />
-      <button
-        v-if="searchTicket"
-        class="clear-btn"
-        @click="SearchTicketAttachmentById"
-      >
-        &times;
-      </button>
+      <div v-else class="empty-state">
+        <p>暂无搜索结果，请尝试其他条件</p>
+      </div>
     </div>
-    <button class="search-btn" @click="SearchTicketAttachmentById">
-      <Search theme="filled" size="18" fill="#fff" />
-    </button>
   </div>
-
-  </div>
-
-  
-
-  <div class ="search-result-container">
-    <ShowTickets :showTickets = "searchResult" v-if="isSearchTickets" />
-  </div>
-
 </template>
 
-<style scoped>
-.search-container{
-  display:flex;
-  gap : 20px;
-  padding:10px;
+<style scoped lang="scss">
+.search-wrapper {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* 样式代码保持不变 */
-.demo-date-picker {
+.date-search-container {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.date-picker-container {
   display: flex;
-  width: 100%;
-  padding: 0;
-  flex-wrap: wrap;
-}
-.demo-date-picker .block {
-  padding: 30px 0;
-  text-align: center;
-  border-right: solid 1px var(--el-border-color);
-  flex: 1;
-}
-.demo-date-picker .block:last-child {
-  border-right: none;
-}
-.demo-date-picker .demonstration {
-  display: block;
-  color: var(--el-text-color-secondary);
-  font-size: 14px;
-  margin-bottom: 20px;
+  gap: 16px;
+  align-items: center;
+  
+  .el-date-editor {
+    flex: 1;
+    max-width: 400px;
+  }
 }
 
-.search-container {
+.id-search-container {
   display: inline-flex;
   align-items: center;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
-  box-shadow: 
-    0 2px 6px rgba(0, 0, 0, 0.05),
-    inset 0 0 0 1px rgba(203, 213, 225, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 
+              inset 0 0 0 1px rgba(203, 213, 225, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  
+  width: 100%;
+  max-width: 600px;
+
   &.focused {
-    box-shadow: 
-      0 4px 12px rgba(99, 102, 241, 0.15),
-      inset 0 0 0 1px #6366f1;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15),
+                inset 0 0 0 1px #6366f1;
   }
 }
 
@@ -235,72 +184,89 @@ function SearchTicketAttachmentById(){
   position: relative;
   display: flex;
   align-items: center;
-  padding: 0 1rem;
-}
-
-.search-icon {
-  margin-right: 0.8rem;
-  transition: all 0.3s ease;
+  padding: 0 16px;
+  flex: 1;
 }
 
 .search-input {
-  width: 280px;
-  height: 44px;
+  width: 100%;
+  height: 48px;
   border: none;
   background: transparent;
-  font-size: 0.95rem;
+  font-size: 14px;
   color: #1e293b;
   outline: none;
-  
+  padding-left: 32px;
+
   &::placeholder {
     color: #94a3b8;
   }
 }
 
-.clear-btn {
+.search-icon {
   position: absolute;
-  right: 0.5rem;
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0 0.5rem;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    color: #6366f1;
-    transform: scale(1.1);
-  }
+  left: 12px;
+  transition: all 0.3s ease;
 }
 
 .search-btn {
-  height: 44px;
-  width: 44px;
+  height: 48px;
+  width: 60px;
   border: none;
   background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
   border-radius: 0 12px 12px 0;
   cursor: pointer;
   transition: all 0.3s ease;
-  
-  &:hover {
+
+  &:hover:not(:disabled) {
     opacity: 0.9;
-    transform: translateX(2px);
   }
-  
-  &:active {
-    transform: scale(0.98);
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
+.search-results {
+  margin-top: 24px;
+  min-height: 300px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+}
+
 @media (max-width: 768px) {
-  .search-input {
-    width: 200px;
+  .date-picker-container {
+    flex-direction: column;
+    
+    .el-date-editor {
+      width: 100%;
+    }
   }
-  
-  .search-container {
-    width: 100%;
-    max-width: 400px;
+
+  .id-search-container {
+    flex-direction: column;
+    background: none;
+    box-shadow: none;
+    border: none;
+
+    .input-wrapper {
+      width: 100%;
+      background: white;
+      border-radius: 8px;
+    }
+
+    .search-btn {
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
   }
 }
 </style>

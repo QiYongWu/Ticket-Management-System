@@ -22,6 +22,7 @@ const form = reactive({
 
 
 
+
 const formRef = ref<FormInstance>();
 
 function generate10DigitId() {
@@ -45,7 +46,7 @@ onMounted(()=>{
 function onSubmit() {
   formRef.value?.validate((valid) => {
     if (valid) {
-      
+
       axios.post('http://222.215.137.44:8084/ticket/ticket_create/', form, {
         headers: {
           'Content-Type': 'application/json'
