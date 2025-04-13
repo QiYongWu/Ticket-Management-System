@@ -1,10 +1,15 @@
 <script setup name="Download" lang="ts">
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
+import { useTicketsInfoStore } from '@/store';
+import {defineProps, onMounted} from 'vue';
 
-const filePath = 'static/file/ba880feb-c46b-44ab-8e0c-44aa27dd8f06.txt';
+let id =  defineProps(['id']);
+onMounted(()=>{
+    console.log(`id:${id.id}`)
+})
 
-async function HandleDownload() {
+async function HandleDownload(filePath:string) {
     try {
         const response = await axios.post(
             'http://222.215.137.44:8084/api_jsonrpc/',
@@ -41,7 +46,13 @@ async function HandleDownload() {
 </script>
 
 <template>
-    <el-button type="primary" @click="HandleDownload">
-        点击下载工单附件
-    </el-button>
+   <div class="attachment-grid" v-for=" attachment in useTicketsInfoStore().ticketsAttachments" 
+   :key = "attachment.feelec_template_id">
+        <div class ="attachment-container"  v-if="attachment.feelec_template_id == id.id">
+            <p>{{attachment.filename}} : </p>
+            <el-button type="primary" @click="HandleDownload(attachment.file_path)">
+                点击下载附件
+            </el-button>
+        </div>
+   </div>
 </template>

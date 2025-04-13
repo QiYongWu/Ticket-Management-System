@@ -36,10 +36,6 @@ const HandleSearch = async () => {
       SearchTicketAttachmentById(TicketInfo.feelec_template_id)
       })
 
-      //调试：
-      console.log(`searchResult:${ useTicketsInfoStore().tickets}`);
-      console.log(`searchAttachmentResult:${ useTicketsInfoStore().ticketsAttachments}`);
-
     } else {
       isSearchTickets.value = false
       ElMessage.info('当前时间段没有工单记录')
@@ -55,7 +51,7 @@ const SearchTicketAttachmentById = async (id:number) => {
     const result = await handleApiRequest('files.list', {
       feelec_template_id: id
     })
-    useTicketsInfoStore().ticketsAttachments = result;
+    useTicketsInfoStore().ticketsAttachments.push(...result);
   } catch {
     isSearchTickets.value = false
   }

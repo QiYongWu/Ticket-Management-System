@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { formatDateTime, formatDuration } from '@/utils/date' // 建议抽离时间处理工具
 import {type  TicketInfo} from '@/types/index.ts'
 import {useTicketsInfoStore} from '@/store/index'
-
+import  Download  from '@/components/download.vue'
 
 // 为每个工单维护独立的抽屉状态
 const drawerStates = ref<{ [key: string]: boolean }>({})
@@ -125,7 +125,11 @@ const safeParseDate = (dateString: string) => {
                  {{ticket.WorkOrderContent.replace('<','').replace('>','').replace('p','').replace('/','').replace('<','').replace('>','').replace('p','')}}
               </div>
             </el-descriptions-item>
-            
+
+            <el-descriptions-item>
+              <Download :id="ticket.feelec_template_id" />
+            </el-descriptions-item>
+          
           </el-descriptions>
 
           <div class="action-buttons">
