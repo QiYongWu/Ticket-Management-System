@@ -1,6 +1,6 @@
 import type { TicketAttachmentInfo, TicketInfo } from "@/types";
 import { defineStore } from "pinia";
-import { formatDate } from '@/utils/date'
+import {formatDateToYMD} from '@/utils/date'
 //创建工单的id
  const useTicketIDStore = defineStore('feelec_template_id',{
    state() {
@@ -30,13 +30,14 @@ const useTicketsInfoStore= defineStore('ticketInfo',{
     }
 })
 
+
 //存储搜索的起始日期与结束日期
 const useDateStore = defineStore('date',{
     state(){
         return {
-           dates: [
-                formatDate(new Date(2025,3,30)),
-                formatDate(new Date())
+            dates: [
+                formatDateToYMD(new Date(2025,3,1)),   //传入的月份值要-1
+                formatDateToYMD(new Date(2025,3,6))
             ]
         }
     }

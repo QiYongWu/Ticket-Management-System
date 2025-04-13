@@ -21,5 +21,20 @@ export function formatDateTime(date: Date): string {
       : `${pad(hours)}:${pad(minutes % 60)}`
   }
 
-  // 日期格式化（ISO 8601格式）
-export const formatDate = (date: Date): string => date.toISOString().split('T')[0]
+  /**
+ * 将 Date 类型格式化为 YYYY-MM-DD 字符串
+ * @param date - JavaScript Date 对象
+ * @returns 格式为 "2025-04-01" 的字符串
+ */
+
+ export  function formatDateToYMD(date: Date): string {
+  const year = date.getFullYear()
+  const month = date.getMonth()  + 1  // 月份从0开始，所以加1
+  const day = date.getDate()
+
+  // 补零操作：确保始终是两位数
+  const formattedMonth = month < 10 ? `0${month}` : `${month}`
+  const formattedDay = day < 10 ? `0${day}` : `${day}`
+
+  return `${year}-${formattedMonth}-${formattedDay}`
+}

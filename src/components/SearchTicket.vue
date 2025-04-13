@@ -6,7 +6,7 @@ import { router } from '@/router/index'
 import {handleApiRequest} from '@/utils/request'
 import { ElMessage } from 'element-plus'
 import { useTicketsInfoStore,useDateStore } from '@/store'
-import { formatDate } from '@/utils/date'
+
 
 
 // 响应式数据
@@ -24,8 +24,8 @@ const HandleSearch = async () => {
   try {
     const [startDate, endDate] =useDateStore().dates
     const result = await handleApiRequest('ticket.list', {
-      start_time: formatDate(startDate),
-      end_time: formatDate(endDate)
+      start_time: startDate,
+      end_time: endDate
     })
     
     if (result?.length) {
@@ -73,7 +73,6 @@ const SearchTicketAttachmentById = async (id:number) => {
           type="daterange"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
-          :default-value="[ formatDate(new Date(2025, 3, 1)),  formatDate(new Date(2025,4,3))]"
           value-format="YYYY-MM-DD"
           format="YYYY-MM-DD"
         />
