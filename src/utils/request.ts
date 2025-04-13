@@ -79,7 +79,6 @@ const handleApiRequest = async (method: string, params: object) => {
       method,
       params
     })
-    console.log(response)
     return JSON.parse(response.data.result)
   } catch (error) {
     console.error('API请求失败:', error)

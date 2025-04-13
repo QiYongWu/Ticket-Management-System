@@ -2,12 +2,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import ShowTickets from './ShowTickets.vue'
 import { router } from '@/router/index'
-
 import {handleApiRequest} from '@/utils/request'
 import { ElMessage } from 'element-plus'
 import { useTicketsInfoStore,useDateStore } from '@/store'
-
-
 
 // 响应式数据
 const isSearchTickets = ref(false); 
@@ -51,7 +48,7 @@ const SearchTicketAttachmentById = async (id:number) => {
     const result = await handleApiRequest('files.list', {
       feelec_template_id: id
     })
-    useTicketsInfoStore().ticketsAttachments.push(result);
+    useTicketsInfoStore().ticketsAttachments.push(...result);
   } catch {
     isSearchTickets.value = false
   }

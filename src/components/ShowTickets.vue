@@ -45,7 +45,7 @@ const safeParseDate = (dateString: string) => {
       class="ticket-item"
     >
       <el-descriptions border>
-        <el-descriptions-item label="分配状态">
+        <el-descriptions-item label="分配状态:">
           <el-button 
             type="primary" 
             @click="toggleDrawer(ticket)"
@@ -54,19 +54,19 @@ const safeParseDate = (dateString: string) => {
           </el-button>
         </el-descriptions-item>
 
-        <el-descriptions-item label="标题">
+        <el-descriptions-item label="标题:">
           <strong>{{ ticket.WorkOrderHeading }}</strong>
         </el-descriptions-item>
 
-        <el-descriptions-item label="发布时间">
+        <el-descriptions-item label="发布时间:">
          {{ ticket.contact_person }}  {{ formatDateTime(safeParseDate(ticket.pubdate)) }}
         </el-descriptions-item>
 
-        <el-descriptions-item label="处理人">
+        <el-descriptions-item label="处理人:">
           {{ processors(ticket) }}
         </el-descriptions-item>
 
-        <el-descriptions-item label="优先级">
+        <el-descriptions-item label="优先级:">
           <el-tag :type="[
             'danger',    // 紧急
             'warning',   // 高
@@ -79,7 +79,7 @@ const safeParseDate = (dateString: string) => {
           </el-tag>
         </el-descriptions-item>
 
-        <el-descriptions-item label="已耗时">
+        <el-descriptions-item label="已耗时:">
           {{ formatDuration(Date.now() - safeParseDate(ticket.pubdate).getTime()) }}
         </el-descriptions-item>
       </el-descriptions>
@@ -92,7 +92,7 @@ const safeParseDate = (dateString: string) => {
       >
         <div class="drawer-content">
           <el-descriptions border column={2}>
-            <el-descriptions-item label="优先级">
+            <el-descriptions-item label="优先级:">
               <el-tag :type="[
                 'danger', 'warning', 'primary', 'info'
               ][ticket.Priority]">
@@ -100,15 +100,18 @@ const safeParseDate = (dateString: string) => {
               </el-tag>
             </el-descriptions-item>
 
-            <el-descriptions-item label="当前状态">
+            <el-descriptions-item label="当前状态:">
               {{ assignmentStatus(ticket) }}
             </el-descriptions-item>
 
-            <el-descriptions-item label="联系人" span={2}>
-              {{ ticket.contact_person }} ({{ ticket.contact_number }})
+            <el-descriptions-item label="联系人:" span={2}>
+              {{ ticket.contact_person }}
+            </el-descriptions-item>
+            <el-descriptions-item label="联系人电话:" span={2}>
+             {{ ticket.contact_number }}
             </el-descriptions-item>
 
-            <el-descriptions-item label="处理进度" span={2}>
+            <el-descriptions-item label="处理进度:" span={2}>
               <el-steps 
                 :active="stepActive(ticket)" 
                 simple
@@ -120,13 +123,13 @@ const safeParseDate = (dateString: string) => {
               </el-steps>
             </el-descriptions-item>
 
-            <el-descriptions-item label="工单内容" span={2}>
+            <el-descriptions-item label="工单内容:" span={2}>
               <div class="content-box">
                  {{ticket.WorkOrderContent.replace('<','').replace('>','').replace('p','').replace('/','').replace('<','').replace('>','').replace('p','')}}
               </div>
             </el-descriptions-item>
 
-            <el-descriptions-item>
+            <el-descriptions-item label="附件:" span={2}>
               <Download :id="ticket.feelec_template_id" />
             </el-descriptions-item>
           
