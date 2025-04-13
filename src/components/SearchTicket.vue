@@ -1,20 +1,18 @@
 <script setup lang="ts" name="SearchTicket">
 import axios from 'axios'
 import { onMounted, reactive, ref } from 'vue'
-import { Search } from '@icon-park/vue-next'
+import { Search, Ticket } from '@icon-park/vue-next'
 import ShowTickets from './ShowTickets.vue'
 import { router } from '@/router/index'
 import { type TicketInfo,type TicketAttachmentInfo } from '@/types'
 import {handleApiRequest} from '@/utils/request'
 import { ElMessage } from 'element-plus'
+import { useTicketsInfo } from '@/store'
 
 // 响应式数据
-const id = ref('')
-const isFocus = ref(false)
-const dates = ref<[Date, Date]>([new Date(2025, 3, 1), new Date()])  // 月份从0开始
-const searchResult = reactive<TicketInfo[]>([])      //存储搜索到的工单信息的结果
-const searchAttachmentResult = reactive<TicketAttachmentInfo[]>([])  //存储搜索到的工单附件信息的结果
-const isSearchTickets = ref(false);  
+const dates = ref<[Date, Date]>([new Date(2025, 3, 1), new Date()])
+const isSearchTickets = ref(false); 
+
 
 // 日期格式化（ISO 8601格式）
 const formatDate = (date: Date): string => date.toISOString().split('T')[0]
@@ -26,8 +24,6 @@ onMounted(() => {
   }
 })
 
-
-
 // 工单搜索
 const HandleSearch = async () => {
   try {
@@ -36,14 +32,19 @@ const HandleSearch = async () => {
       start_time: formatDate(startDate),
       end_time: formatDate(endDate)
     })
-
-    searchResult.splice(0, searchResult.length) // 清空数组
     
     if (result?.length) {
-      searchResult.push(...result)
+      useTicketsInfo().tickets.push(...result)
       isSearchTickets.value = true
-      ElMessage.success(`找到 ${result.length} 条工单记录`)
-      console.log(searchResult);
+      ElMessage.success(`找到 ${result.length} 条工单记录`);
+      useTicketsInfo().tickets.forEach((TicketInfo) =>{
+        SearchTicketAttachmentById(TicketInfo.feelec_template_id)
+      })
+
+      //调试：
+      console.log(`searchResult:${ useTicketsInfo().tickets}`);
+      console.log(`searchAttachmentResult:${ useTicketsInfo().ticketsAttachments}`);
+
     } else {
       isSearchTickets.value = false
       ElMessage.info('当前时间段没有工单记录')
@@ -54,19 +55,12 @@ const HandleSearch = async () => {
 }
 
 // 附件搜索
-const SearchTicketAttachmentById = async () => {
-  const searchId = id.value.trim()
-  if (!searchId) {
-    ElMessage.warning('请输入有效的附件ID')
-    return
-  }
-
+const SearchTicketAttachmentById = async (id:number) => {
   try {
     const result = await handleApiRequest('files.list', {
-      feelec_template_id: searchId
+      feelec_template_id: id
     })
-      console.log(result);
-  
+    useTicketsInfo().ticketsAttachments.push(...result);
   } catch {
     isSearchTickets.value = false
   }
@@ -75,6 +69,7 @@ const SearchTicketAttachmentById = async () => {
 </script>
 
 <template>
+
   <div class="search-wrapper">
     <div class="date-search-container">
       <div class="date-picker-container">
@@ -87,6 +82,7 @@ const SearchTicketAttachmentById = async () => {
           value-format="YYYY-MM-DD"
           format="YYYY-MM-DD"
         />
+
         <el-button 
           type="primary" 
           @click="HandleSearch"
@@ -95,46 +91,20 @@ const SearchTicketAttachmentById = async () => {
           搜索工单
         </el-button>
       </div>
-
-      <div class="id-search-container" :class="{ focused: isFocus }">
-        <div class="input-wrapper">
-          <Search
-            theme="filled"
-            :size="20"
-            :fill="isFocus ? '#6366f1' : '#94a3b8'"
-            class="search-icon"
-          />
-          <input
-            v-model.trim="id"
-            type="text"
-            placeholder="请输入工单附件ID"
-            class="search-input"
-            @focus="isFocus = true"
-            @blur="isFocus = false"
-            @keyup.enter="SearchTicketAttachmentById"
-          />
-        </div>
-        <button 
-          class="search-btn"
-          @click="SearchTicketAttachmentById"
-          :disabled="!id.trim()"
-        >
-          <Search theme="filled" size="18" fill="#fff" />
-        </button>
       </div>
     </div>
 
     <div class="search-results">
       <ShowTickets 
-        :showTickets="searchResult" 
+        :showTickets="useTicketsInfo().tickets" 
         v-if="isSearchTickets"
-        :key="searchResult.length" 
+        :key="useTicketsInfo().tickets.length" 
       />
       <div v-else class="empty-state">
         <p>暂无搜索结果，请尝试其他条件</p>
       </div>
     </div>
-  </div>
+  
 </template>
 
 <style scoped lang="scss">

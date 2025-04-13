@@ -1,3 +1,4 @@
+import type { TicketAttachmentInfo, TicketInfo } from "@/types";
 import { defineStore } from "pinia";
 //创建工单的id
  const useTicketIDStore = defineStore('feelec_template_id',{
@@ -9,7 +10,7 @@ import { defineStore } from "pinia";
 })
 
 //存储抽屉组件的开/关状态
- const useDrawerStore = defineStore('drawer',{
+const useDrawerStore = defineStore('drawer',{
     state(){
         return{
             drawer:false
@@ -18,8 +19,18 @@ import { defineStore } from "pinia";
 
 })
 
+//存储工单信息
+const useTicketsInfo = defineStore('ticketInfo',{
+    state(){
+        return {
+            tickets:<TicketInfo []>[],
+            ticketsAttachments:<TicketAttachmentInfo []>[]
+        }
+    }
+})
 
-export {useTicketIDStore,useDrawerStore}
+
+export {useTicketIDStore,useDrawerStore,useTicketsInfo}
 
 
 

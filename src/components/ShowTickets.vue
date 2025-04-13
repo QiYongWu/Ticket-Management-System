@@ -1,21 +1,12 @@
 <script lang="ts" setup name="ShowTickets">
 import { computed, onMounted, ref } from 'vue'
 import { formatDateTime, formatDuration } from '@/utils/date' // 建议抽离时间处理工具
+import {type  TicketInfo} from '@/types/index.ts'
 
-interface Ticket {
-  feelec_template_id: string
-  WorkOrderHeading: string
-  contact_person: string
-  pubdate: string
-  Priority: number
-  WorkOrderContent: string
-  contact_number: string
-  processor?: string
-  status?: number
-}
+
 
 const props = defineProps<{
-  showTickets: Ticket[]
+  showTickets:  TicketInfo[]
 }>()
 
 // 为每个工单维护独立的抽屉状态
