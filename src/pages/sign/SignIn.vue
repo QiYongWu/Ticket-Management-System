@@ -17,16 +17,17 @@
               localStorage.setItem('jwt_token', response.data.token || '');  //存储token
               const msg = response.data.message;
               if(!response.data.success){     //登录失败，显示信息
-                ElMessage.info(msg);
+                ElMessage.error(msg);
                 if(msg == '密码错误！'){
                   signInForm.password = '';
+                 
                 }
                 else {signInForm.username = '';}
                 
               }
 
               else if(response.data.success){        //登录成功时无返回
-                ElMessage.info('登录成功！');
+                ElMessage.success('登录成功！');
                 router.push('/home');
                 localStorage.setItem('isLogin','true');  
                 //若登陆成功，则存储用户名与密码

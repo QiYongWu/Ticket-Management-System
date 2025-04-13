@@ -24,7 +24,7 @@ axios.interceptors.request.use(
     return config;
   },
  error => {
-  ElMessage.info('请求发生了错误')
+  ElMessage.error('请求发生了错误')
   return Promise.reject(error);
 });
 
@@ -34,7 +34,7 @@ axios.interceptors.response.use(
     const stateCode = response.data.code;
     switch(stateCode){
       case 1003 :  {
-       ElMessage.info('注意，您还未登录');
+       ElMessage.warning('注意，您还未登录');
         SetLoginState(false); //重置账户与设置登录状态为未登录 
         router.push('/sign-in');
       }
@@ -42,7 +42,7 @@ axios.interceptors.response.use(
       }
 
       case 1002 :{
-        ElMessage.info('不好意思，登录已经超时');
+        ElMessage.warning('不好意思，登录已经超时');
         SetLoginState(false);  //重置账户与设置登录状态为未登录   
         router.push('/sign-in');
       }

@@ -19,10 +19,17 @@ function ChangePassword() {
 
     axios.post('http://222.215.137.44:8084/api_jsonrpc/', userInfo)
     .then((res) => {
-      ElMessage.info(res.data.message);
+     
       if(res.data.message == '密码修改成功！'){
-        isLoading.value = true
+        isLoading.value = true;
+        ElMessage.success(res.data.message);
       }
+      else{
+        ElMessage.error(res.data.message)
+      }
+    })
+    .catch((error) =>{
+      ElMessage.error('系统发生错误，抱歉')
     })
   
 }
