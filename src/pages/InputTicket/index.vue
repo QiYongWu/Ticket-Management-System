@@ -54,11 +54,11 @@ function onSubmit() {
       })
       .then((response) => {
         console.log(response)
-       ElMessage.info(response.data.message);
+       ElMessage.success(response.data.message);
       })
       .catch((error) => {
         console.error('提交失败:', error);
-      ElMessage.info('提交失败，请稍后重试');
+      ElMessage.error('提交失败，请稍后重试');
       });
     } else {
       console.log('验证失败');
