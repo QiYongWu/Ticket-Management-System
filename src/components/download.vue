@@ -27,6 +27,7 @@ async function HandleDownload(filePath:string) {
         if (response.status === 200) {
             console.log(response)
             const blob = new Blob([response.data]);
+            ElMessage.warning(`文件大小：${blob.size} 字节 (${(blob.size / 1024).toFixed(2)} KB)`);
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -49,10 +50,12 @@ async function HandleDownload(filePath:string) {
    <div class="attachment-grid" v-for=" attachment in useTicketsInfoStore().ticketsAttachments" 
    :key = "attachment.feelec_template_id">
         <div class ="attachment-container"  v-if="attachment.feelec_template_id == id.id">
-            <p>{{attachment.filename}} : </p>
-            <el-button type="primary" @click="HandleDownload(attachment.file_path)">
+            <link theme="outline" size="24" fill="#333"/>
+            
+            <p style="display:inline-block">{{attachment.filename}} </p>
+            <span style="  text-decoration: underline; margin-left:30px; color: dodgerblue;display: inline-block; cursor:pointer" type="primary" @click="HandleDownload(attachment.file_path)">
                 点击下载附件
-            </el-button>
+            </span>
         </div>
    </div>
 </template>

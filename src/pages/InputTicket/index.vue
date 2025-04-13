@@ -20,9 +20,6 @@ const form = reactive({
   contact_number: ''
 });
 
-
-
-
 const formRef = ref<FormInstance>();
 
 function generate10DigitId() {
