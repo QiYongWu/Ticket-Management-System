@@ -1,5 +1,6 @@
 import type { TicketAttachmentInfo, TicketInfo } from "@/types";
 import { defineStore } from "pinia";
+import { formatDate } from '@/utils/date'
 //创建工单的id
  const useTicketIDStore = defineStore('feelec_template_id',{
    state() {
@@ -20,7 +21,7 @@ const useDrawerStore = defineStore('drawer',{
 })
 
 //存储工单信息
-const useTicketsInfo = defineStore('ticketInfo',{
+const useTicketsInfoStore= defineStore('ticketInfo',{
     state(){
         return {
             tickets:<TicketInfo []>[],
@@ -29,8 +30,20 @@ const useTicketsInfo = defineStore('ticketInfo',{
     }
 })
 
+//存储搜索的起始日期与结束日期
+const useDateStore = defineStore('date',{
+    state(){
+        return {
+           dates: [
+                formatDate(new Date(2025,3,30)),
+                formatDate(new Date())
+            ]
+        }
+    }
+})
 
-export {useTicketIDStore,useDrawerStore,useTicketsInfo}
+
+export {useTicketIDStore,useDrawerStore,useTicketsInfoStore,useDateStore}
 
 
 

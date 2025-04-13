@@ -20,3 +20,6 @@ export function formatDateTime(date: Date): string {
       ? `${days}天 ${pad(hours % 24)}:${pad(minutes % 60)}`
       : `${pad(hours)}:${pad(minutes % 60)}`
   }
+
+  // 日期格式化（ISO 8601格式）
+export const formatDate = (date: Date): string => date.toISOString().split('T')[0]

@@ -1,21 +1,16 @@
 <script setup lang="ts" name="SearchTicket">
-import axios from 'axios'
 import { onMounted, reactive, ref } from 'vue'
-import { Search, Ticket } from '@icon-park/vue-next'
 import ShowTickets from './ShowTickets.vue'
 import { router } from '@/router/index'
-import { type TicketInfo,type TicketAttachmentInfo } from '@/types'
+
 import {handleApiRequest} from '@/utils/request'
 import { ElMessage } from 'element-plus'
-import { useTicketsInfo } from '@/store'
+import { useTicketsInfoStore,useDateStore } from '@/store'
+import { formatDate } from '@/utils/date'
+
 
 // 响应式数据
-const dates = ref<[Date, Date]>([new Date(2025, 3, 1), new Date()])
 const isSearchTickets = ref(false); 
-
-
-// 日期格式化（ISO 8601格式）
-const formatDate = (date: Date): string => date.toISOString().split('T')[0]
 
 // 初始化加载
 onMounted(() => {
@@ -27,23 +22,23 @@ onMounted(() => {
 // 工单搜索
 const HandleSearch = async () => {
   try {
-    const [startDate, endDate] = dates.value
+    const [startDate, endDate] =useDateStore().dates
     const result = await handleApiRequest('ticket.list', {
       start_time: formatDate(startDate),
       end_time: formatDate(endDate)
     })
     
     if (result?.length) {
-      useTicketsInfo().tickets.push(...result)
+      useTicketsInfoStore().tickets = result
       isSearchTickets.value = true
       ElMessage.success(`找到 ${result.length} 条工单记录`);
-      useTicketsInfo().tickets.forEach((TicketInfo) =>{
-        SearchTicketAttachmentById(TicketInfo.feelec_template_id)
+      useTicketsInfoStore().tickets.forEach((TicketInfo) =>{
+      SearchTicketAttachmentById(TicketInfo.feelec_template_id)
       })
 
       //调试：
-      console.log(`searchResult:${ useTicketsInfo().tickets}`);
-      console.log(`searchAttachmentResult:${ useTicketsInfo().ticketsAttachments}`);
+      console.log(`searchResult:${ useTicketsInfoStore().tickets}`);
+      console.log(`searchAttachmentResult:${ useTicketsInfoStore().ticketsAttachments}`);
 
     } else {
       isSearchTickets.value = false
@@ -60,7 +55,7 @@ const SearchTicketAttachmentById = async (id:number) => {
     const result = await handleApiRequest('files.list', {
       feelec_template_id: id
     })
-    useTicketsInfo().ticketsAttachments.push(...result);
+    useTicketsInfoStore().ticketsAttachments = result;
   } catch {
     isSearchTickets.value = false
   }
@@ -74,11 +69,11 @@ const SearchTicketAttachmentById = async (id:number) => {
     <div class="date-search-container">
       <div class="date-picker-container">
         <el-date-picker
-          v-model="dates"
+          v-model="useDateStore().dates"
           type="daterange"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
-          :default-value="[new Date(2025, 3, 1), new Date()]"
+          :default-value="[ formatDate(new Date(2025, 3, 1)),  formatDate(new Date(2025,4,3))]"
           value-format="YYYY-MM-DD"
           format="YYYY-MM-DD"
         />
@@ -86,8 +81,7 @@ const SearchTicketAttachmentById = async (id:number) => {
         <el-button 
           type="primary" 
           @click="HandleSearch"
-          :disabled="!dates[0] || !dates[1]"
-        >
+          :disabled="useDateStore().dates.length !==2">
           搜索工单
         </el-button>
       </div>
@@ -96,10 +90,9 @@ const SearchTicketAttachmentById = async (id:number) => {
 
     <div class="search-results">
       <ShowTickets 
-        :showTickets="useTicketsInfo().tickets" 
         v-if="isSearchTickets"
-        :key="useTicketsInfo().tickets.length" 
       />
+
       <div v-else class="empty-state">
         <p>暂无搜索结果，请尝试其他条件</p>
       </div>

@@ -2,33 +2,30 @@
 import { computed, onMounted, ref } from 'vue'
 import { formatDateTime, formatDuration } from '@/utils/date' // 建议抽离时间处理工具
 import {type  TicketInfo} from '@/types/index.ts'
+import {useTicketsInfoStore} from '@/store/index'
 
-
-
-const props = defineProps<{
-  showTickets:  TicketInfo[]
-}>()
 
 // 为每个工单维护独立的抽屉状态
 const drawerStates = ref<{ [key: string]: boolean }>({})
 
 // 处理人显示逻辑
-const processors = computed(() => (ticket: Ticket) => {
-  return ticket.processor || '暂无'
+const processors = computed(() => (ticket:  TicketInfo) => {
+  return ticket.handler_id || '暂无'
 })
 
 // 工单分配状态
-const assignmentStatus = computed(() => (ticket: Ticket) => {
-  return ticket.status === undefined ? '未分配' : ['待分配', '处理中', '已完成'][ticket.status] || '未知状态'
+const assignmentStatus = computed(() => (ticket:  TicketInfo) => {
+  return ticket.state === undefined ? '未分配' : ['待分配', '处理中', '已完成'][ticket.state] || '未知状态'
 })
 
 // 动态计算步骤进度
-const stepActive = (ticket: Ticket) => {
-  return ticket.status !== undefined ? ticket.status + 1 : 0
+const stepActive = (ticket:  TicketInfo) => {
+  return ticket.state !== undefined ? ticket.state + 1 : 0
 }
 
+
 // 切换抽屉状态
-const toggleDrawer = (ticket: Ticket) => {
+const toggleDrawer = (ticket:  TicketInfo) => {
   drawerStates.value[ticket.feelec_template_id] = !drawerStates.value[ticket.feelec_template_id]
 }
 
@@ -43,7 +40,7 @@ const safeParseDate = (dateString: string) => {
   <div class="tickets-container">
     <el-divider />
     <div 
-      v-for="ticket in showTickets" 
+      v-for="ticket in useTicketsInfoStore().tickets" 
       :key="ticket.feelec_template_id"
       class="ticket-item"
     >
