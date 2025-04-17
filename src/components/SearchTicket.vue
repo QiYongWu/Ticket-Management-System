@@ -6,9 +6,8 @@ import {handleApiRequest} from '@/utils/request'
 import { ElMessage } from 'element-plus'
 import { useTicketsInfoStore,useDateStore } from '@/store'
 
-
-
-
+//防抖与节流
+import {AntiShake,Throttling} from '@/utils/function'
 // 响应式数据
 const isSearchTickets = ref(false); 
 
@@ -19,7 +18,33 @@ onMounted(() => {
   }
 })
 
-// 工单搜索
+// 工单搜索,防抖,在设定的超时时间内，只接收最后一次点击。
+let timeoutId:number = 0;
+const timeout = 1000;
+
+function func1(){
+  if(timeoutId){
+    clearTimeout(timeoutId);
+  }
+
+  timeoutId = setTimeout(() => {
+    HandleSearch();
+  }, timeout);
+}
+
+//节流
+function func2(){
+  if(timeoutId){
+    return
+  }
+ timeoutId =  setTimeout(()=>{
+    HandleSearch();
+    timeoutId = 0;
+  },timeout);
+}
+
+
+
 const HandleSearch = async () => {
   try {
     const [startDate, endDate] =useDateStore().dates
@@ -73,9 +98,10 @@ const SearchTicketAttachmentById = async (id:number) => {
           format="YYYY-MM-DD"
         />
 
+        <!--搜索按钮引入防抖-->
         <el-button 
           type="primary" 
-          @click="HandleSearch"
+          @click=" func1" 
           :disabled="useDateStore().dates.length !==2">
           搜索工单
         </el-button>
@@ -89,7 +115,7 @@ const SearchTicketAttachmentById = async (id:number) => {
       />
 
       <div v-else class="empty-state">
-        <p>暂无搜索结果，请尝试其他条件</p>
+        <p>暂无搜索结果，请尝试其他日期进行搜索</p>
       </div>
     </div>
   
